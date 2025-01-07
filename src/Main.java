@@ -4,10 +4,10 @@ public class Main {
     public static void main(String[] args) {
         String username = "C##JAVA";
         String password = "C##JAVA";
-        JDBC admin = new JDBC("system", "oracle");
+        JDBC admin = new JDBC("jdbc:oracle:thin:@localhost:1521:xe", "system", "oracle");
         admin.execute(String.format("ALTER USER %s QUOTA UNLIMITED ON USERS", username));
 
-        JDBC database = new JDBC(username, password);
+        JDBC database = new JDBC("jdbc:oracle:thin:@localhost:1521:xe", username, password);
         database.execute(
                 "BEGIN EXECUTE IMMEDIATE 'DROP TABLE dummy_table CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;");
         database.execute(

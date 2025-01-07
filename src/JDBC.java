@@ -5,13 +5,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import oracle.jdbc.driver.parser.util.Array;
-
 public class JDBC {
+    private String url;
     private String username;
     private String password;
 
-    public JDBC(String username, String password) {
+    public JDBC(String url, String username, String password) {
+        this.url = url;
         this.username = username;
         this.password = password;
         connect();
@@ -19,7 +19,7 @@ public class JDBC {
 
     public void connect() {
         try (Connection connection = DriverManager.getConnection(
-                "jdbc:oracle:thin:@localhost:1521:xe", username, password)) {
+                url, username, password)) {
             if (connection != null) {
                 System.out.println("Connected to the database!");
             } else {
@@ -35,7 +35,7 @@ public class JDBC {
 
     public void execute(String command) {
         try (Connection connection = DriverManager.getConnection(
-                "jdbc:oracle:thin:@localhost:1521:xe", username, password)) {
+                url, username, password)) {
             Statement statement = connection.createStatement();
             boolean hasResultSet = statement.execute(command);
 
@@ -58,7 +58,7 @@ public class JDBC {
     public ArrayList<ArrayList<String>> executeQuery(String command, int width) {
         ArrayList<ArrayList<String>> result = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(
-                "jdbc:oracle:thin:@localhost:1521:xe", username, password)) {
+                url, username, password)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(command);
             while (resultSet.next()) {
@@ -79,7 +79,7 @@ public class JDBC {
 
     public void executeUpdate(String command) {
         try (Connection connection = DriverManager.getConnection(
-                "jdbc:oracle:thin:@localhost:1521:xe", username, password)) {
+                url, username, password)) {
             Statement statement = connection.createStatement();
             int line = statement.executeUpdate(command);
             System.out.println(String.format("%s lines affected", line));
