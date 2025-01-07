@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Produit {
 
     private int idProduit;
@@ -5,7 +7,6 @@ public class Produit {
     private double prixUnitaire;
     private double prixAuKg;
     private double poids;
-    private String description;
     private String categorie;
     private String marque;
     private String nutriscore;
@@ -14,13 +15,12 @@ public class Produit {
     // CONSTRUCTEURS
 
     // Constructeur complet
-    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids, String description, String categorie, String marque, String nutriscore) {
+    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids, String categorie, String marque, String nutriscore) {
         this.idProduit = idProduit;
         this.libelle = libelle;
         this.prixUnitaire = prixUnitaire;
         this.prixAuKg = prixAuKg;
         this.poids = poids;
-        this.description = description;
         this.categorie = categorie;
         this.marque = marque;
         this.nutriscore = nutriscore;
@@ -29,7 +29,19 @@ public class Produit {
 
     // Constructeur par l'id du produit
     public Produit(int idProduit) {
-        // Recupérer dans la bd le produit
+        JDBC database = new JDBC("jdbc:oracle:thin:@localhost:1521:orclcdb", "C##ADMINMIAGE", "adminmiage");
+        ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Produit", 8);
+        System.out.println(result);
+        /*
+        this.idProduit = Integer.parseInt(result.get(0).get(0));
+        this.libelle = result.get(0).get(1);
+        this.prixUnitaire = Double.parseDouble(result.get(0).get(2));
+        this.prixAuKg = Double.parseDouble(result.get(0).get(3));
+        this.poids = Double.parseDouble(result.get(0).get(4));
+        this.categorie = result.get(0).get(5);
+        this.marque = result.get(0).get(6);
+        this.nutriscore = result.get(0).get(7);*/
+
     }
 
     // Constructeur par copie
@@ -39,7 +51,6 @@ public class Produit {
         this.prixUnitaire = produit.prixUnitaire;
         this.prixAuKg = produit.prixAuKg;
         this.poids = produit.poids;
-        this.description = produit.description;
         this.categorie = produit.categorie;
         this.marque = produit.marque;
         this.nutriscore = produit.nutriscore;
@@ -54,7 +65,6 @@ public class Produit {
                 ", a pour prix unitaire " + prixUnitaire + '€' +
                 ", a pour prix au kilo " + prixAuKg +'€' +
                 ", a pour poids " + poids + "kg" +
-                ", a pour description '" + description + '\'' +
                 ", a pour categorie '" + categorie + '\'' +
                 ", a pour marque '" + marque + '\'' +
                 ", et a pour nutriscore '" + nutriscore + '\'' +
@@ -99,14 +109,6 @@ public class Produit {
 
     public void setPoids(double poids) {
         this.poids = poids;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getCategorie() {
