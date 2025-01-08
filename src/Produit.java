@@ -39,7 +39,8 @@ public class Produit {
         else this.prixUnitaire = 0;
         if (result.get(0).get(3) != null)  this.prixAuKg = Double.parseDouble(result.get(0).get(3));
         else this.prixAuKg = 0;
-        this.poids = Double.parseDouble(result.get(0).get(4));
+        if (result.get(0).get(4) != null) this.poids = Double.parseDouble(result.get(0).get(4));
+        else this.poids = 0;
         this.categorie = result.get(0).get(5);
         this.marque = result.get(0).get(6);
         this.nutriscore = result.get(0).get(7);

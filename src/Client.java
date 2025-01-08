@@ -8,19 +8,28 @@ public class Client {
     private Profil profil;
 
 
-    public Client(int idClient, String Nom, String Prenom, int Age, String Adresse, Panier panier, Profil profil) {
+    public Client(int idClient, String Nom, String Prenom, int Age, String Adresse, Profil profil) {
         this.idClient = idClient;
         this.Nom = Nom;
         this.Prenom = Prenom;
         this.Age = Age;
         this.Adresse = Adresse;
-        this.panier = panier;
+        this.panier = new Panier();
         this.profil = profil;
+    }
+
+    public Client(int idClient){
+        JDBC database = new JDBC("jdbc:oracle:thin:@localhost:1521:orclcdb", "C##ADMINMIAGE", "adminmiage");
     }
 
 
 
+    public void validate(){
+        JDBC database = new JDBC("jdbc:oracle:thin:@localhost:1521:orclcdb", "C##ADMINMIAGE", "adminmiage");
 
+        database.execute("INSERT INTO Commande (commandeId, DateCommande, MagId, ClientId) " +
+                "VALUES (commandeId_seq.nextval, 1, SYSDATE, " + 0 + ")");
+    }
 
 
 
