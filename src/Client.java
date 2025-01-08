@@ -9,20 +9,21 @@ public class Client {
     private Panier panier;
     private Profil profil;
     private String sexe;
+    private int idMagasin;
 
-
-    public Client(int idClient, String Nom, String Prenom, int Age, String sexe, String Adresse, Profil profil) {
+    public Client(int idClient, String Nom, String Prenom, int Age, String sexe, String Adresse, Profil profil, int magasinId) {
         this.idClient = idClient;
         this.Nom = Nom;
         this.Prenom = Prenom;
         this.Age = Age;
         this.sexe = sexe;
         this.Adresse = Adresse;
-        this.panier = new Panier();
+        this.idMagasin = magasinId;
+        this.panier = new Panier(magasinId);
         this.profil = profil;
     }
 
-    public Client(int idClient){
+    public Client(int idClient, int magasinId){
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
         ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Client WHERE clientId = " + idClient, 6);
@@ -35,6 +36,10 @@ public class Client {
         this.Age = Integer.parseInt(result.get(0).get(3));
         this.sexe = result.get(0).get(4);
         this.Adresse = result.get(0).get(5);
+
+        this.panier = new Panier(magasinId);
+        this.idMagasin = magasinId;
+
     }
 
 
@@ -42,8 +47,23 @@ public class Client {
     public void validatePanier(){
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
-        try {
+        for (Produit p : panier.getProduits().keySet()) {
+            ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin, 3);
+            if (result.isEmpty()) {
+                System.out.println("Produit non disponible dans ce magasin");
+                return;
+            }
+            else if (Integer.parseInt(result.getFirst().get(2)) < panier.getProduits().get(p)) {
+                System.out.println("Stock insuffisant");
+                return;
+            }
+            else {
+                database.execute("UPDATE Stocker SET QteStock = QteStock - " + panier.getProduits().get(p) + " WHERE produitId = " + p.getIdProduit() + " AND MagId = " + idMagasin);
+            }
+        }
 
+
+        try {
             //TO DO : FAIRE SEQUENCE POUR COMMANDEID
             database.execute("INSERT INTO Commande (commandeId, DateCommande, MagId, ClientId) " +
                     "VALUES (1, SYSDATE, 1, " + idClient + ")");
@@ -104,7 +124,7 @@ public class Client {
 
     public Panier getPanier() {
         if (panier == null){
-            panier = new Panier();
+            panier = new Panier(idMagasin);
         }
         return panier;
     }
@@ -122,5 +142,14 @@ public class Client {
 
     public void setProfil(Profil profil) {
         this.profil = profil;
+    }
+
+    public void setIdMagasin(int idMagasin) {
+        this.idMagasin = idMagasin;
+        panier = new Panier(idMagasin);
+    }
+
+    public int getIdMagasin() {
+        return idMagasin;
     }
 }

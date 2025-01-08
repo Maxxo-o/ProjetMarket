@@ -4,22 +4,33 @@ import java.util.HashMap;
 public class Panier {
     private HashMap<Produit, Integer> produits;
     private double prixTotal;
+    private final int idMagasin;
+    private JDBC database;
 
-    public Panier() {
+    public Panier(int idMagasin) {
         this.produits = new HashMap<>();
         this.prixTotal = 0;
+        this.idMagasin = idMagasin;
+        this.database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
     }
 
     public Panier(Panier p){
         this.produits = p.produits;
         this.prixTotal = p.prixTotal;
+        this.idMagasin = p.idMagasin;
+        this.database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
     }
 
 
     public void addProduct(Produit p, int quantite){
         if (quantite>0){
-            produits.put(p, quantite);
-            prixTotal += p.getPrixUnitaire()*quantite;
+            ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin, 3);
+            if (result.isEmpty()) System.out.println("Produit non disponible dans ce magasin");
+            else if (Integer.parseInt(result.getFirst().get(2)) < quantite) System.out.println("Stock insuffisant");
+            else {
+                produits.put(p, quantite);
+                prixTotal += p.getPrixUnitaire() * quantite;
+            }
         }
     }
 
@@ -65,7 +76,6 @@ public class Panier {
         }
     }
 
-
     public HashMap<Produit, Integer> getProduits() {
         return produits;
     }
@@ -80,5 +90,9 @@ public class Panier {
 
     public void setPrixTotal(double prixTotal) {
         this.prixTotal = prixTotal;
+    }
+
+    public int getIdMagasin() {
+        return idMagasin;
     }
 }

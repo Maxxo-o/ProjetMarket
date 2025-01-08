@@ -31,7 +31,18 @@ public class Produit {
     public Produit(int idProduit) {
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(),ProjectConfig.getPassword());
         ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Produit WHERE produitId = " + idProduit, 8);
+        if (!result.isEmpty()) ContructFromBd(result);
+        else System.out.println("Produit non trouvé");
+    }
 
+    public Produit(String libelle) {
+        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(),ProjectConfig.getPassword());
+        ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Produit WHERE NomProd = '" + libelle + "'", 8);
+        if (!result.isEmpty()) ContructFromBd(result);
+        else System.out.println("Produit non trouvé");
+    }
+
+    private void ContructFromBd(ArrayList<ArrayList<String>> result){
 
         this.idProduit = Integer.parseInt(result.get(0).get(0));
         this.libelle = result.get(0).get(1);
@@ -44,7 +55,6 @@ public class Produit {
         this.categorie = result.get(0).get(5);
         this.marque = result.get(0).get(6);
         this.nutriscore = result.get(0).get(7);
-
     }
 
     // Constructeur par copie
