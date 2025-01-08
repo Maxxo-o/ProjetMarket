@@ -1,13 +1,14 @@
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Research {
-    public static void searchByKeyword(String keyword) {
+    public static List<List<String>> searchByKeyword(String keyword) {
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
-        ArrayList<ArrayList<String>> queryResult = database.executeQuery("SELECT * FROM Produit", 8);
+        List<List<String>> queryResult = database.executeQuery("SELECT * FROM Produit", 8);
 
-        List<ArrayList<String>> result = queryResult
+        List<List<String>> result = queryResult
                 .stream()
                 .filter(e -> {
                     return e.get(1).toLowerCase().contains(keyword.toLowerCase())
@@ -16,20 +17,39 @@ public class Research {
                 })
                 .collect(Collectors.toList());
 
-        result.forEach(System.out::println);
-        System.out.println();
+        return result;
     }
 
-    public static void listCategory(String keyword) {
+    public static List<List<String>> listCategory(String keyword) {
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
-        ArrayList<ArrayList<String>> queryResult = database.executeQuery("SELECT * FROM Produit", 8);
+        List<List<String>> queryResult = database.executeQuery("SELECT * FROM Produit", 8);
 
-        List<ArrayList<String>> result = queryResult
+        List<List<String>> result = queryResult
                 .stream()
                 .filter(e -> e.get(6).toLowerCase().contains(keyword.toLowerCase()))
                 .collect(Collectors.toList());
 
-        result.forEach(System.out::println);
-        System.out.println();
+        return result;
+    }
+
+    public static List<List<String>> orderList(List<List<String>> list, String condition, Boolean croissant) {
+        List<String> conditionsSimples = Arrays.asList("NomProd", "PrixAuKg", "PrixUnitaire", "Poids", "Nutriscore",
+                "Categorie", "Marque");
+        if (conditionsSimples.contains(condition)) {
+            int indexCondition = conditionsSimples.indexOf(condition) + 1;
+            int direction = croissant ? 1 : -1;
+            Collections.sort(list, (e1, e2) -> {
+                if (e1.get(indexCondition) == null|| e2.get(indexCondition) == null) {
+                    return 0;
+                } else {
+                    if (indexCondition > 1 && indexCondition < 5) {
+                        return direction * Double.compare(Double.parseDouble(e1.get(indexCondition)),
+                                Double.parseDouble(e2.get(indexCondition)));
+                    }
+                    return direction * e1.get(indexCondition).compareTo(e2.get(indexCondition));
+                }
+            });
+        }
+        return list;
     }
 }
