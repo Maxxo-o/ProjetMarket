@@ -30,17 +30,19 @@ public class Produit {
     // Constructeur par l'id du produit
     public Produit(int idProduit) {
         JDBC database = new JDBC("jdbc:oracle:thin:@localhost:1521:orclcdb", "C##ADMINMIAGE", "adminmiage");
-        ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Produit", 8);
-        System.out.println(result);
-        /*
+        ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Produit WHERE produitId = " + idProduit, 8);
+
+
         this.idProduit = Integer.parseInt(result.get(0).get(0));
         this.libelle = result.get(0).get(1);
-        this.prixUnitaire = Double.parseDouble(result.get(0).get(2));
-        this.prixAuKg = Double.parseDouble(result.get(0).get(3));
+        if (result.get(0).get(2) != null) this.prixUnitaire = Double.parseDouble(result.get(0).get(2));
+        else this.prixUnitaire = 0;
+        if (result.get(0).get(3) != null)  this.prixAuKg = Double.parseDouble(result.get(0).get(3));
+        else this.prixAuKg = 0;
         this.poids = Double.parseDouble(result.get(0).get(4));
         this.categorie = result.get(0).get(5);
         this.marque = result.get(0).get(6);
-        this.nutriscore = result.get(0).get(7);*/
+        this.nutriscore = result.get(0).get(7);
 
     }
 
@@ -64,7 +66,7 @@ public class Produit {
                 ", a pour libelle '" + libelle + '\'' +
                 ", a pour prix unitaire " + prixUnitaire + '€' +
                 ", a pour prix au kilo " + prixAuKg +'€' +
-                ", a pour poids " + poids + "kg" +
+                ", a pour poids " + poids + "g" +
                 ", a pour categorie '" + categorie + '\'' +
                 ", a pour marque '" + marque + '\'' +
                 ", et a pour nutriscore '" + nutriscore + '\'' +
