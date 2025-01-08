@@ -1,9 +1,12 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class JDBC {
     private String url;
@@ -17,9 +20,8 @@ public class JDBC {
         connect();
     }
 
-    public void connect() {
-        try (Connection connection = DriverManager.getConnection(
-                url, username, password)) {
+    private void connect() {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
             if (connection != null) {
                 System.out.println("Connected to the database!");
             } else {
@@ -27,15 +29,14 @@ public class JDBC {
             }
 
         } catch (SQLException e) {
-            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void execute(String command) {
-        try (Connection connection = DriverManager.getConnection(
-                url, username, password)) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
             boolean hasResultSet = statement.execute(command);
 
@@ -49,7 +50,7 @@ public class JDBC {
                 System.out.println("Command executed successfully.");
             }
         } catch (SQLException e) {
-            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,8 +58,7 @@ public class JDBC {
 
     public ArrayList<ArrayList<String>> executeQuery(String command, int width) {
         ArrayList<ArrayList<String>> result = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(
-                url, username, password)) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(command);
             while (resultSet.next()) {
@@ -70,7 +70,7 @@ public class JDBC {
             }
             return result;
         } catch (SQLException e) {
-            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,19 +78,41 @@ public class JDBC {
     }
 
     public void executeUpdate(String command) {
-        try (Connection connection = DriverManager.getConnection(
-                url, username, password)) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
             int line = statement.executeUpdate(command);
             System.out.println(String.format("%s lines affected", line));
         } catch (SQLException e) {
-            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) throws Exception {
-
+    public void executeScript(String path) {
+        try (Scanner scanner = new Scanner(
+                new FileInputStream(path))) {
+            StringBuilder command = new StringBuilder();
+            while (scanner.hasNextLine()) {
+                String ch = scanner.nextLine().trim();
+                if (ch.isEmpty() || ch.startsWith("--")) {
+                    continue;
+                }
+                command.append(ch);
+                if (ch.endsWith(";")) {
+                    String sql = command.toString().trim();
+                    sql = sql.substring(0, sql.length() - 1);
+                    if (sql.startsWith("INSERT")) {
+                        System.out.println(sql);
+                        executeUpdate(sql);
+                    } else {
+                        execute(sql);
+                    }
+                    command.setLength(0);
+                }
+            }
+        } catch (FileNotFoundException fne) {
+            System.err.println(path + " est absent ! ");
+        }
     }
 }
