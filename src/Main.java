@@ -5,10 +5,9 @@ import java.util.Properties;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println();
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream(""));
+            properties.load(new FileInputStream("./src/config.properities"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
