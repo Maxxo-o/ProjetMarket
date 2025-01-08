@@ -29,7 +29,7 @@ public class Produit {
 
     // Constructeur par l'id du produit
     public Produit(int idProduit) {
-        JDBC database = new JDBC("jdbc:oracle:thin:@localhost:1521:orclcdb", "C##ADMINMIAGE", "adminmiage");
+        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(),ProjectConfig.getPassword());
         ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Produit WHERE produitId = " + idProduit, 8);
 
 
