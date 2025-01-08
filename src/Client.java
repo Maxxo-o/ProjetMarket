@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Client {
     private int idClient;
     private String Nom;
@@ -6,29 +8,55 @@ public class Client {
     private String Adresse;
     private Panier panier;
     private Profil profil;
+    private String sexe;
 
 
-    public Client(int idClient, String Nom, String Prenom, int Age, String Adresse, Profil profil) {
+    public Client(int idClient, String Nom, String Prenom, int Age, String sexe, String Adresse, Profil profil) {
         this.idClient = idClient;
         this.Nom = Nom;
         this.Prenom = Prenom;
         this.Age = Age;
+        this.sexe = sexe;
         this.Adresse = Adresse;
         this.panier = new Panier();
         this.profil = profil;
     }
 
     public Client(int idClient){
-        JDBC database = new JDBC("jdbc:oracle:thin:@localhost:1521:orclcdb", "C##ADMINMIAGE", "adminmiage");
+        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+
+        ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Client WHERE clientId = " + idClient, 6);
+
+        System.out.println(result);
+
+        this.idClient = Integer.parseInt(result.get(0).get(0));
+        this.Nom = result.get(0).get(1);
+        this.Prenom = result.get(0).get(2);
+        this.Age = Integer.parseInt(result.get(0).get(3));
+        this.sexe = result.get(0).get(4);
+        this.Adresse = result.get(0).get(5);
     }
 
 
 
-    public void validate(){
-        JDBC database = new JDBC("jdbc:oracle:thin:@localhost:1521:orclcdb", "C##ADMINMIAGE", "adminmiage");
+    public void validatePanier(){
+        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
-        database.execute("INSERT INTO Commande (commandeId, DateCommande, MagId, ClientId) " +
-                "VALUES (commandeId_seq.nextval, 1, SYSDATE, " + 0 + ")");
+        try {
+
+            //TO DO : FAIRE SEQUENCE POUR COMMANDEID
+            database.execute("INSERT INTO Commande (commandeId, DateCommande, MagId, ClientId) " +
+                    "VALUES (1, SYSDATE, 1, " + idClient + ")");
+        }
+        catch (Exception e){
+            System.out.println("Erreur lors de la validation du panier");
+        }
+
+
+        for (Produit p : panier.getProduits().keySet()) {
+            database.execute("INSERT INTO Composer (produitId, CommandeId, QteCom) " +
+                        "VALUES (" + p.getIdProduit() + ", 1," + panier.getProduits().get(p) + ")");
+        }
     }
 
 
@@ -75,6 +103,9 @@ public class Client {
     }
 
     public Panier getPanier() {
+        if (panier == null){
+            panier = new Panier();
+        }
         return panier;
     }
 
@@ -83,6 +114,9 @@ public class Client {
     }
 
     public Profil getProfil() {
+        if (profil == null){
+            profil = new Profil();
+        }
         return profil;
     }
 
