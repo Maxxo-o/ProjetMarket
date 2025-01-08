@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class JDBC {
@@ -46,8 +47,6 @@ public class JDBC {
                     System.out.println(resultSet.getString(1));
                 }
                 System.out.println();
-            } else {
-                System.out.println("Command executed successfully.");
             }
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
@@ -56,13 +55,13 @@ public class JDBC {
         }
     }
 
-    public ArrayList<ArrayList<String>> executeQuery(String command, int width) {
-        ArrayList<ArrayList<String>> result = new ArrayList<>();
+    public List<List<String>> executeQuery(String command, int width) {
+        List<List<String>> result = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(command);
             while (resultSet.next()) {
-                ArrayList<String> line = new ArrayList<>();
+                List<String> line = new ArrayList<>();
                 for (int i = 1; i <= width; i++) {
                     line.add(resultSet.getString(i));
                 }
