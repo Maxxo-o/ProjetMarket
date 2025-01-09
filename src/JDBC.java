@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -55,18 +56,48 @@ public class JDBC {
         }
     }
 
-    public List<List<String>> executeQuery(String command, int width) {
+    public List<List<String>> executeQuery(String command) {
         List<List<String>> result = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(command);
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+            int columnCount = resultSetMetaData.getColumnCount();
+
             while (resultSet.next()) {
                 List<String> line = new ArrayList<>();
-                for (int i = 1; i <= width; i++) {
+                for (int i = 1; i <= columnCount; i++) {
                     line.add(resultSet.getString(i));
                 }
                 result.add(line);
             }
+
+            return result;
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<List<String>> executeQueryMetaData(String command) {
+        List<List<String>> result = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(command);
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+            int columnCount = resultSetMetaData.getColumnCount();
+
+            List<String> columeName = new ArrayList<>();
+            List<String> columeType = new ArrayList<>();
+            for (int i = 1; i <= columnCount; i++) {
+                columeName.add(resultSetMetaData.getColumnName(i));
+                columeType.add(resultSetMetaData.getColumnTypeName(i));
+            }
+            result.add(columeName);
+            result.add(columeType);
+
             return result;
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
