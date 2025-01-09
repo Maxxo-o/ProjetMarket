@@ -9,7 +9,7 @@ public class Profil {
     private double prixMoyArt;
     private double prixMaxArt;
     private double prixMinArt;
-    private ArrayList<Produit> ArticlesPref;
+    private List<Produit> ArticlesPref;
     private int idClient;
     private JDBC database;
 
@@ -120,7 +120,8 @@ public class Profil {
         }
     }
 
-    public ArrayList<Produit> getArticlesPref() {
+    public List<Produit> getArticlesPref() {
+        if (ArticlesPref == null) ArticlesPref = new ArrayList<>();
         return ArticlesPref;
     }
 

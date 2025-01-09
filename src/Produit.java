@@ -47,15 +47,15 @@ public class Produit {
 
         this.idProduit = Integer.parseInt(result.get(0).get(0));
         this.libelle = result.get(0).get(1);
-        if (result.get(0).get(2) != null) this.prixUnitaire = Double.parseDouble(result.get(0).get(2));
+        if (result.get(0).get(3) != null) this.prixUnitaire = Double.parseDouble(result.get(0).get(3));
         else this.prixUnitaire = 0;
-        if (result.get(0).get(3) != null)  this.prixAuKg = Double.parseDouble(result.get(0).get(3));
+        if (result.get(0).get(2) != null)  this.prixAuKg = Double.parseDouble(result.get(0).get(2));
         else this.prixAuKg = 0;
         if (result.get(0).get(4) != null) this.poids = Double.parseDouble(result.get(0).get(4));
         else this.poids = 0;
-        this.categorie = result.get(0).get(5);
-        this.marque = result.get(0).get(6);
-        this.nutriscore = result.get(0).get(7);
+        this.nutriscore = result.get(0).get(5);
+        this.categorie = result.get(0).get(6);
+        this.marque = result.get(0).get(7);
     }
 
     // Constructeur par copie
