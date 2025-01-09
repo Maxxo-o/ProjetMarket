@@ -10,7 +10,7 @@ public class Research {
         List<List<String>> queryResult = database.executeQuery(
                 "SELECT Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, SUM(QteCom) AS \"Quantité vendu\" "
                         + "FROM Produit "
-                        + "JOIN Composer ON Produit.ProduitId = Composer.ProduitId "
+                        + "LEFT JOIN Composer ON Produit.ProduitId = Composer.ProduitId "
                         + "GROUP BY Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque");
 
         List<List<String>> result = queryResult
@@ -22,7 +22,6 @@ public class Research {
                 })
                 .collect(Collectors.toList());
 
-        System.out.println(result);
         return result;
     }
 
@@ -32,7 +31,7 @@ public class Research {
         List<List<String>> queryResult = database.executeQuery(
                 "SELECT Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, SUM(QteCom) AS \"Quantité vendu\" "
                         + "FROM Produit "
-                        + "JOIN Composer ON Produit.ProduitId = Composer.ProduitId "
+                        + "LEFT JOIN Composer ON Produit.ProduitId = Composer.ProduitId "
                         + "GROUP BY Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque");
 
         List<List<String>> result = queryResult
