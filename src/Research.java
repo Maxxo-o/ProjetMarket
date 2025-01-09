@@ -22,6 +22,7 @@ public class Research {
                 })
                 .collect(Collectors.toList());
 
+        System.out.println(result);
         return result;
     }
 
