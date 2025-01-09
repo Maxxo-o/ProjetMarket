@@ -40,15 +40,7 @@ public class JDBC {
     public void execute(String command) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
-            boolean hasResultSet = statement.execute(command);
-
-            if (hasResultSet) {
-                ResultSet resultSet = statement.getResultSet();
-                while (resultSet.next()) {
-                    System.out.println(resultSet.getString(1));
-                }
-                System.out.println();
-            }
+            statement.execute(command);
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
             System.err.println(command);
@@ -72,6 +64,7 @@ public class JDBC {
                 }
                 result.add(line);
             }
+            resultSet.close();
 
             return result;
         } catch (SQLException e) {
@@ -99,6 +92,7 @@ public class JDBC {
             }
             result.add(columeName);
             result.add(columeType);
+            resultSet.close();
 
             return result;
         } catch (SQLException e) {
@@ -114,7 +108,7 @@ public class JDBC {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
             int line = statement.executeUpdate(command);
-            System.out.println(String.format("%s lines affected", line));
+            System.out.println(String.format("%s lines updated", line));
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
             System.err.println(command);
@@ -132,7 +126,7 @@ public class JDBC {
                 if (ch.isEmpty() || ch.startsWith("--")) {
                     continue;
                 }
-                command.append(ch);
+                command.append(ch + " ");
                 if (ch.endsWith(";")) {
                     String sql = command.toString().trim();
                     sql = sql.substring(0, sql.length() - 1);
