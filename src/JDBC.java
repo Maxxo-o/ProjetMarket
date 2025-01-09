@@ -75,6 +75,7 @@ public class JDBC {
             return result;
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+            System.err.println(command);
         } catch (Exception e) {
             e.printStackTrace();
         }
