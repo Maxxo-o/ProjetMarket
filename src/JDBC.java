@@ -51,6 +51,7 @@ public class JDBC {
             }
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+            System.err.println(command);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,6 +103,7 @@ public class JDBC {
             return result;
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+            System.err.println(command);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,6 +117,7 @@ public class JDBC {
             System.out.println(String.format("%s lines affected", line));
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+            System.err.println(command);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,7 +137,6 @@ public class JDBC {
                     String sql = command.toString().trim();
                     sql = sql.substring(0, sql.length() - 1);
                     if (sql.startsWith("INSERT")) {
-                        System.out.println(sql);
                         executeUpdate(sql);
                     } else {
                         execute(sql);
