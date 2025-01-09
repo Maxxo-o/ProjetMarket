@@ -27,9 +27,7 @@ public class Client {
     public Client(int idClient, int magasinId){
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
-        List<List<String>> result = database.executeQuery("SELECT * FROM Client WHERE clientId = " + idClient, 6);
-
-        System.out.println(result);
+        List<List<String>> result = database.executeQuery("SELECT * FROM Client WHERE clientId = " + idClient);
 
         this.idClient = Integer.parseInt(result.get(0).get(0));
         this.Nom = result.get(0).get(1);
@@ -49,7 +47,7 @@ public class Client {
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
         for (Produit p : panier.getProduits().keySet()) {
-            List<List<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin, 3);
+            List<List<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin);
             if (result.isEmpty()) {
                 System.out.println("Produit non disponible dans ce magasin");
                 return;
@@ -66,8 +64,8 @@ public class Client {
 
         try {
             //TO DO : FAIRE SEQUENCE POUR COMMANDEID
-            database.execute("INSERT INTO Commande (commandeId, DateCommande, MagId, ClientId) " +
-                    "VALUES (1, SYSDATE, 1, " + idClient + ")");
+            database.execute("INSERT INTO Commande ( DateCommande, MagId, ClientId, EtatCom) " +
+                    "VALUES (SYSDATE,"+ idMagasin + ", " + idClient + " , 'En preparation')");
         }
         catch (Exception e){
             System.out.println("Erreur lors de la validation du panier");
