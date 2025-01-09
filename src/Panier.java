@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Panier {
     private HashMap<Produit, Integer> produits;
@@ -24,7 +25,7 @@ public class Panier {
 
     public void addProduct(Produit p, int quantite){
         if (quantite>0){
-            ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin, 3);
+            List<List<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin, 3);
             if (result.isEmpty()) System.out.println("Produit non disponible dans ce magasin");
             else if (Integer.parseInt(result.getFirst().get(2)) < quantite) System.out.println("Stock insuffisant");
             else {

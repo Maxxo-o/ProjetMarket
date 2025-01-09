@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Produit {
 
@@ -30,19 +31,19 @@ public class Produit {
     // Constructeur par l'id du produit
     public Produit(int idProduit) {
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(),ProjectConfig.getPassword());
-        ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Produit WHERE produitId = " + idProduit, 8);
+        List<List<String>> result = database.executeQuery("SELECT * FROM Produit WHERE produitId = " + idProduit, 8);
         if (!result.isEmpty()) ContructFromBd(result);
         else System.out.println("Produit non trouvé");
     }
 
     public Produit(String libelle) {
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(),ProjectConfig.getPassword());
-        ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Produit WHERE NomProd = '" + libelle + "'", 8);
+        List<List<String>> result = database.executeQuery("SELECT * FROM Produit WHERE NomProd = '" + libelle + "'", 8);
         if (!result.isEmpty()) ContructFromBd(result);
         else System.out.println("Produit non trouvé");
     }
 
-    private void ContructFromBd(ArrayList<ArrayList<String>> result){
+    private void ContructFromBd(List<List<String>> result){
 
         this.idProduit = Integer.parseInt(result.get(0).get(0));
         this.libelle = result.get(0).get(1);

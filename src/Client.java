@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Client {
     private int idClient;
@@ -26,7 +27,7 @@ public class Client {
     public Client(int idClient, int magasinId){
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
-        ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Client WHERE clientId = " + idClient, 6);
+        List<List<String>> result = database.executeQuery("SELECT * FROM Client WHERE clientId = " + idClient, 6);
 
         System.out.println(result);
 
@@ -48,7 +49,7 @@ public class Client {
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
         for (Produit p : panier.getProduits().keySet()) {
-            ArrayList<ArrayList<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin, 3);
+            List<List<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin, 3);
             if (result.isEmpty()) {
                 System.out.println("Produit non disponible dans ce magasin");
                 return;
@@ -135,7 +136,6 @@ public class Client {
 
     public Profil getProfil() {
         if (profil == null){
-            profil = new Profil();
         }
         return profil;
     }
