@@ -25,3 +25,24 @@ public class ProdFreq {
         }
     }
 }
+
+/* affichage
+
+        int clientId = 1;
+
+        // Obtenir les 5 produits les plus fréquemment commandés pour le client
+        List<List<String>> top5Products = ProdFreq.getFrequentOrder(clientId);
+
+        // Vérifier et afficher les résultats
+        if (top5Products != null && !top5Products.isEmpty()) {
+            System.out.println("Top 5 des produits les plus fréquemment commandés pour le client " + clientId + ": ");
+
+            // Affichage des produits et fréquences
+            for (List<String> product : top5Products) {
+                System.out.println(product.get(0) + " (" + product.get(1) + "), ");
+            }
+        } else {
+            System.out.println("Aucun produit trouvé pour le client " + clientId);
+        }
+
+ */
