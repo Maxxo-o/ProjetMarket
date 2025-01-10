@@ -19,7 +19,8 @@ public class Profil {
         this.nomProfils = new ArrayList<>();
         this.ArticlesPref = new ArrayList<>();
         database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
-        //List<List<String>> result = database.executeQuery("SELECT p.* FROM TypesDeProfil p Appartenir_Type t WHERE t.clientId = " + idClient+ " AND p.ProfilId = t.ProfilId" );
+        List<List<String>> result = database.executeQuery("SELECT p.* FROM TypesDeProfil p, Appartenir_Type t WHERE t.clientId = " + idClient+ " AND p.ProfilId = t.ProfilId" );
+        setArticlesPref();
 
     }
 
