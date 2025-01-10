@@ -24,12 +24,7 @@ public class JDBC {
 
     private void connect() {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            if (connection != null) {
-                System.out.println("Connected to the database!");
-            } else {
-                System.out.println("Failed to make connection!");
-            }
-
+            System.out.println("Connected to the database!");
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         } catch (Exception e) {
@@ -132,6 +127,8 @@ public class JDBC {
                     sql = sql.substring(0, sql.length() - 1);
                     if (sql.startsWith("INSERT")) {
                         executeUpdate(sql);
+                    } else if (sql.startsWith("SELECT")) {
+                        executeQuery(sql).forEach(System.out::println);
                     } else {
                         execute(sql);
                     }
