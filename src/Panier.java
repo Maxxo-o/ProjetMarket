@@ -28,17 +28,32 @@ public class Panier {
     }
 
 
-    public void addProduct(Produit p, int quantite){
+    /*
+     La méthode retourne 0 si le produit n'est pas disponible dans le magasin ou si la quantité demandée est négative ou nulle,
+     la quantité restante si le stock est insuffisant,
+     -1 si le produit a été ajouté correctement
+     */
+    public int addProduct(Produit p, int quantite){
         if (quantite>0){
             List<List<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin);
-            if (result.isEmpty()) System.out.println("Produit non disponible dans ce magasin");
-            else if (Integer.parseInt(result.getFirst().get(2)) < quantite) System.out.println("Stock insuffisant");
+            if (result.isEmpty())
+            {
+                System.out.println("Produit non disponible dans ce magasin");
+                return 0;
+            }
+            else if (Integer.parseInt(result.getFirst().get(2)) < quantite) {
+                System.out.println("Stock insuffisant");
+                return Integer.parseInt(result.getFirst().get(2));
+            }
             else {
                 produits.put(p, quantite);
                 prixTotal += p.getPrixUnitaire() * quantite;
+                return -1;
             }
         }
+        return 0;
     }
+
 
     public void removeProduct(Produit p, int quantite){
         if (produits.containsKey(p)){
