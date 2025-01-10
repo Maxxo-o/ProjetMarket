@@ -70,6 +70,10 @@ public class Produit {
         this.nutriscore = produit.nutriscore;
     }
 
+    public String queryPushProductToBd(){
+        return "INSERT INTO Produit (NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque) VALUES ('" + libelle + "', " + prixAuKg + ", " + prixUnitaire + ", " + poids + ", '" + nutriscore + "', '" + categorie + "', '" + marque + "')";
+    }
+
 
     @Override
     public String toString() {
