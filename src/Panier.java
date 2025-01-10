@@ -1,3 +1,5 @@
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,19 +9,22 @@ public class Panier {
     private double prixTotal;
     private final int idMagasin;
     private JDBC database;
+    private Timestamp start;
 
     public Panier(int idMagasin) {
         this.produits = new HashMap<>();
         this.prixTotal = 0;
         this.idMagasin = idMagasin;
         this.database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+        this.start = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    public Panier(Panier p){
+    public Panier(Panier p) {
         this.produits = p.produits;
         this.prixTotal = p.prixTotal;
         this.idMagasin = p.idMagasin;
         this.database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+        this.start = p.start;
     }
 
 
