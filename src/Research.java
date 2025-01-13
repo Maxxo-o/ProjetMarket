@@ -46,26 +46,31 @@ public class Research {
 
     // US0.4 Je veux trier une liste de produits.
     public static List<List<String>> orderList(List<List<String>> list, String condition, Boolean croissant) {
-        List<String> conditionsSimples = Arrays.asList("NomProd", "PrixAuKg", "PrixUnitaire",
+        List<String> conditions = Arrays.asList("NomProd", "PrixAuKg", "PrixUnitaire",
                 "Poids", "Nutriscore", "Categorie", "Marque");
         int indexCondition;
-        if (conditionsSimples.contains(condition)) {
-            indexCondition = conditionsSimples.indexOf(condition) + 1;
-        } else {
-            indexCondition = 8;
-        }
-        int direction = croissant ? 1 : -1;
-        Collections.sort(list, (e1, e2) -> {
-            if (e1.get(indexCondition) == null || e2.get(indexCondition) == null) {
-                return 0;
+
+        if (list != null) {
+            if (conditions.contains(condition)) {
+                indexCondition = conditions.indexOf(condition) + 1;
             } else {
-                if (indexCondition >= 2 && indexCondition <= 4 || indexCondition == 8) {
-                    return direction * Double.compare(Double.parseDouble(e1.get(indexCondition)),
-                            Double.parseDouble(e2.get(indexCondition)));
-                }
-                return direction * e1.get(indexCondition).compareTo(e2.get(indexCondition));
+                indexCondition = list.get(0).size() - 1;
             }
-        });
+            int direction = croissant ? 1 : -1;
+            Collections.sort(list, (e1, e2) -> {
+                if (e1.get(indexCondition) == null || e2.get(indexCondition) == null) {
+                    return 0;
+                } else {
+                    if (indexCondition >= 2 && indexCondition <= 4 || indexCondition == list.get(0).size() - 1) {
+                        return direction * Double.compare(Double.parseDouble(e1.get(indexCondition)),
+                                Double.parseDouble(e2.get(indexCondition)));
+                    }
+                    return direction * e1.get(indexCondition).compareTo(e2.get(indexCondition));
+                }
+            });
+        } else {
+            System.err.println("La list est null");
+        }
         return list;
     }
 }
