@@ -1,19 +1,15 @@
 public class Preparer {
-    public static void commanedsAPreparer() {
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
-
+    public static void commanedsAPreparer(JDBC database) {
         database.executeQuery("""
-                    SELECT *
+                    SELECT Commande.*, DateLivraison
                     FROM Commande
-                    JOIN Delivrer ON Commande.CommandeId = Delivrer.CommandeId
+                    LEFT JOIN Delivrer ON Commande.CommandeId = Delivrer.CommandeId
                     WHERE EtatCom = 'En preparation'
                     ORDER BY DateLivraison
                 """).forEach(System.out::println);
     }
 
-    public static void marquerCommande(int CommandeId, String EtatCom) {
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
-
+    public static void marquerCommande(JDBC database, int CommandeId, String EtatCom) {
         database.executeUpdate(String.format("""
                 UPDATE Commande
                 SET EtatCom = %s
