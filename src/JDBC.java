@@ -14,21 +14,35 @@ public class JDBC {
     private String url;
     private String username;
     private String password;
+    private Connection connection;
 
     public JDBC(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
-        connect();
+        this.connection = connect();
     }
 
-    private void connect() {
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            System.out.println("Connected to the database!");
+    private Connection connect() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(url, username, password);
+                System.out.println("Connected to the database");
+            }
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        return connection;
+    }
+
+    public void disconnect() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Disconnected from the database");
+            }
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
         }
     }
 
@@ -39,8 +53,6 @@ public class JDBC {
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
             System.err.println(command);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -65,8 +77,6 @@ public class JDBC {
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
             System.err.println(command);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -93,8 +103,6 @@ public class JDBC {
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
             System.err.println(command);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -107,8 +115,6 @@ public class JDBC {
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
             System.err.println(command);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
