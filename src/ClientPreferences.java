@@ -4,12 +4,12 @@ import java.util.List;
 public class ClientPreferences {
 
     // Méthode pour récupérer tous les résultats pour un client donné
-    public static List<String> getClientPreferences(int clientId) {
+    public static List<List<String>> getClientPreferences(int clientId) {
         // Connexion à la base de données via JDBC
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
-        // Initialisation de la liste pour stocker tous les résultats sous forme de String
-        List<String> allResults = new ArrayList<>();
+        // Initialisation de la liste pour stocker tous les résultats sous forme de List<List<String>>
+        List<List<String>> allResults = new ArrayList<>();
 
         // 1. Nutriscore le plus commandé
         String nutriscoreQuery = "SELECT CASE " +
@@ -34,9 +34,11 @@ public class ClientPreferences {
                 ")";
         List<List<String>> nutriscoreResult = database.executeQuery(nutriscoreQuery);
         if (nutriscoreResult != null && !nutriscoreResult.isEmpty()) {
-            allResults.addAll(flattenList(nutriscoreResult));
+            allResults.add(nutriscoreResult.get(0)); // Ajout de la première ligne de résultats pour le Nutriscore
         } else {
-            allResults.add("Aucun Nutriscore trouvé.");
+            List<String> emptyNutriscore = new ArrayList<>();
+            emptyNutriscore.add("Aucun Nutriscore trouvé.");
+            allResults.add(emptyNutriscore);
         }
 
         // 2. Catégorie de produit la plus commandée
@@ -59,9 +61,11 @@ public class ClientPreferences {
                 ")";
         List<List<String>> categorieResult = database.executeQuery(categorieQuery);
         if (categorieResult != null && !categorieResult.isEmpty()) {
-            allResults.addAll(flattenList(categorieResult));
+            allResults.add(categorieResult.get(0)); // Ajout de la première ligne de résultats pour la catégorie
         } else {
-            allResults.add("Aucune catégorie trouvée.");
+            List<String> emptyCategorie = new ArrayList<>();
+            emptyCategorie.add("Aucune catégorie trouvée.");
+            allResults.add(emptyCategorie);
         }
 
         // 3. Marque la plus commandée
@@ -84,9 +88,11 @@ public class ClientPreferences {
                 ")";
         List<List<String>> marqueResult = database.executeQuery(marqueQuery);
         if (marqueResult != null && !marqueResult.isEmpty()) {
-            allResults.addAll(flattenList(marqueResult));
+            allResults.add(marqueResult.get(0)); // Ajout de la première ligne de résultats pour la marque
         } else {
-            allResults.add("Aucune marque trouvée.");
+            List<String> emptyMarque = new ArrayList<>();
+            emptyMarque.add("Aucune marque trouvée.");
+            allResults.add(emptyMarque);
         }
 
         // 4. Préférence pour les produits bio
@@ -101,50 +107,29 @@ public class ClientPreferences {
                 "JOIN Composer c ON p.ProduitId = c.ProduitId " +
                 "JOIN Commande cmd ON c.CommandeId = cmd.CommandeId " +
                 "WHERE cmd.ClientId = " + clientId;
-
         List<List<String>> preferenceBioResult = database.executeQuery(preferenceBioQuery);
         if (preferenceBioResult != null && !preferenceBioResult.isEmpty()) {
-            allResults.addAll(flattenList(preferenceBioResult));
+            allResults.add(preferenceBioResult.get(0)); // Ajout de la première ligne de résultats pour la préférence bio
         } else {
-            allResults.add("Aucune préférence bio trouvée.");
+            List<String> emptyPreferenceBio = new ArrayList<>();
+            emptyPreferenceBio.add("Aucune préférence bio trouvée.");
+            allResults.add(emptyPreferenceBio);
         }
-
-        // Retourne tous les résultats sous forme de liste de chaînes
-        return allResults;
-    }
-
-    // Méthode pour aplatir une List<List<String>> en une List<String>
-    private static List<String> flattenList(List<List<String>> inputList) {
-        List<String> flatList = new ArrayList<>();
-        for (List<String> subList : inputList) {
-            flatList.addAll(subList);
-        }
-        return flatList;
-    }
-}
-
-
-/* affichage
 
         // Affichage des résultats
-        if (clientPreferences != null && !clientPreferences.isEmpty()) {
-            // Nutriscore
-            System.out.print("Nutriscore le plus commandé : ");
-            System.out.println(String.join(", ", clientPreferences.subList(0, 1)));
+        System.out.print("Nutriscore le plus commandé : ");
+        System.out.println(String.join(", ", nutriscoreResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
 
-            // Catégorie
-            System.out.print("Catégorie la plus commandée : ");
-            System.out.println(String.join(", ", clientPreferences.subList(1, 2)));
+        System.out.print("Catégorie la plus commandée : ");
+        System.out.println(String.join(", ", categorieResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
 
-            // Marque
-            System.out.print("Marque la plus commandée : ");
-            System.out.println(String.join(", ", clientPreferences.subList(2, 3)));
+        System.out.print("Marque la plus commandée : ");
+        System.out.println(String.join(", ", marqueResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
 
-            // Préférence Bio
-            System.out.print("Préférence Bio : ");
-            System.out.println(String.join(", ", clientPreferences.subList(3, 4)));
-        } else {
-            System.out.println("Aucun résultat trouvé pour le client " + clientId);
-        }
+        System.out.print("Préférence Bio : ");
+        System.out.println(String.join(", ", preferenceBioResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
 
- */
+        // Retourne tous les résultats sous forme de List<List<String>>
+        return allResults;
+    }
+}
