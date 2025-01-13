@@ -5,6 +5,7 @@ DROP TABLE Client CASCADE CONSTRAINTS;
 DROP TABLE Magasin CASCADE CONSTRAINTS;
 DROP TABLE TypesDeProfil CASCADE CONSTRAINTS;
 DROP TABLE Commande CASCADE CONSTRAINTS;
+DROP TABLE Periode CASCADE CONSTRAINTS;
 DROP TABLE Preferer CASCADE CONSTRAINTS;
 DROP TABLE Stocker CASCADE CONSTRAINTS;
 DROP TABLE Appartenir_Type CASCADE CONSTRAINTS;
@@ -12,6 +13,7 @@ DROP TABLE Delivrer CASCADE CONSTRAINTS;
 DROP TABLE Repartir CASCADE CONSTRAINTS;
 DROP TABLE Composer CASCADE CONSTRAINTS;
 DROP TABLE Correspondre CASCADE CONSTRAINTS;
+DROP TABLE Lier CASCADE CONSTRAINTS;
 
 
 
@@ -58,6 +60,13 @@ ClientId VARCHAR(50) NOT NULL,
 EtatCom VARCHAR(50) NOT NULL CHECK (EtatCom IN ('En preparation', 'En attente de livraison','Finalisee')),
 CONSTRAINT FK_Commande_Magasin FOREIGN KEY (MagId) REFERENCES Magasin(MagId),
 CONSTRAINT FK_Commande_Client FOREIGN KEY (ClientId) REFERENCES Client(ClientId)
+);
+-- Table Periode
+CREATE TABLE Periode (
+    PeriodeId INT PRIMARY KEY,
+    NomPeriode VARCHAR2(50) NOT NULL,
+    DebutPeriode DATE NOT NULL,
+    FinPeriode DATE NOT NULL
 );
 -- Table Preferer
 CREATE TABLE Preferer (
@@ -123,7 +132,15 @@ PRIMARY KEY (ProduitId, ProfilId),
 CONSTRAINT FK_Correspondre_Produit FOREIGN KEY (ProduitId) REFERENCES Produit(ProduitId),
 CONSTRAINT FK_Correspondre_Profil FOREIGN KEY (ProfilId) REFERENCES TypesDeProfil(ProfilId)
 );
-
+-- Table Lier
+CREATE TABLE Lier (
+    ProduitId_est_lié VARCHAR(50) NOT NULL,
+    ProduitId VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_produit_est_lié FOREIGN KEY (ProduitId_est_lié) REFERENCES Produit(ProduitId),
+    CONSTRAINT fk_produit FOREIGN KEY (ProduitId) REFERENCES Produit(ProduitId),
+    CONSTRAINT pk_lier PRIMARY KEY (ProduitId_est_lié, ProduitId),
+    CONSTRAINT chk_different CHECK (ProduitId_est_lié <> ProduitId)
+);
 
 -- Table Produit
 INSERT ALL
@@ -463,6 +480,7 @@ SELECT * FROM dual;
 INSERT ALL
 INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
 VALUES ('1', '1', 3, 'Livraison à domicile', TO_DATE('2025-01-10', 'YYYY-MM-DD'))
+
 INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
 VALUES ('2', '1', 2, 'Récupérer en magasin', TO_DATE('2025-01-11', 'YYYY-MM-DD'))
 
@@ -484,6 +502,73 @@ VALUES ('3', '2', 2, 'Livraison à domicile', TO_DATE('2025-01-16', 'YYYY-MM-DD'
 INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
 VALUES ('4', '2', 3, 'Récupérer en magasin', TO_DATE('2025-01-17', 'YYYY-MM-DD'))
 SELECT * FROM dual;
+
+
+
+-- Table Lier
+INSERT ALL
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (1, 5)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (1, 8)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (1, 12)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (2, 7)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (2, 19)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (2, 14)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (3, 10)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (3, 18)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (3, 6)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (4, 13)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (4, 9)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (4, 2)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (5, 15)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (5, 20)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (5, 1)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (6, 2)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (6, 4)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (6, 17)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (7, 12)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (7, 9)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (7, 8)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (8, 16)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (8, 3)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (8, 19)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (9, 6)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (9, 13)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (9, 7)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (10, 18)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (10, 11)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (10, 20)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (11, 15)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (11, 2)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (11, 5)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (12, 1)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (12, 3)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (12, 8)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (13, 4)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (13, 9)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (13, 7)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (14, 11)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (14, 19)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (14, 10)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (15, 20)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (15, 12)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (15, 6)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (16, 18)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (16, 3)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (16, 5)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (17, 8)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (17, 1)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (17, 13)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (18, 14)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (18, 9)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (18, 20)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (19, 7)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (19, 6)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (19, 4)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (20, 11)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (20, 2)
+    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (20, 15)
+SELECT * FROM DUAL;
+
 
 
 -- Table Stocker
