@@ -75,7 +75,7 @@ public class Client {
 
         for (Produit p : panier.getProduits().keySet()) {
             database.execute("INSERT INTO Composer (produitId, CommandeId, QteCom) " +
-                        "VALUES (" + p.getIdProduit() + ", 1," + panier.getProduits().get(p) + ")");
+                        "VALUES (" + p.getIdProduit() + ", 99," + panier.getProduits().get(p) + ")");
         }
     }
 

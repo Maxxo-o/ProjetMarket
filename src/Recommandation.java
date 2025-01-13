@@ -56,7 +56,7 @@ public class Recommandation {
                 double prixAuKg = 0;
                 if (resultProfil.get(0).get(3) != null) prixUnitaire = Double.parseDouble(resultProfil.get(0).get(3));
                 if (resultProfil.get(0).get(2) != null) prixAuKg = Double.parseDouble(resultProfil.get(0).get(2));
-                produitsCategorieProfil.add(new Produit(Integer.parseInt(row.get(0)), row.get(1), prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5)));
+                produitsCategorieProfil.add(new Produit(Integer.parseInt(row.get(0)), row.get(1), prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5),Boolean.parseBoolean(row.get(8))));
             }
 
             //filtrer les produits préférés par catégorie, marque et nutriscore
@@ -87,7 +87,7 @@ public class Recommandation {
             double prixAuKg = 0;
             if (result.get(0).get(3) != null) prixUnitaire = Double.parseDouble(result.get(0).get(3));
             if (result.get(0).get(2) != null)  prixAuKg = Double.parseDouble(result.get(0).get(2));
-            produitsCategorie.add(new Produit(Integer.parseInt(row.get(0)), row.get(1),prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5)));
+            produitsCategorie.add(new Produit(Integer.parseInt(row.get(0)), row.get(1),prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5), Boolean.parseBoolean(row.get(8))));
         }
 
         //filtrer les produits de la même catégorie par marque et nutriscore
@@ -108,6 +108,8 @@ public class Recommandation {
     }
 
 
+    // TODO : Faire par rapport aux habitudes de consommation du client
+    // TODO : Rajouter si le produit doit etre bio
     public static List<Produit> filtrerProduits(List<Produit> produits, String categorie, String marque, String nutriscore, double prixProd){
         return produits.stream()
                 .filter(produit -> categorie == null || produit.getCategorie().equals(categorie))

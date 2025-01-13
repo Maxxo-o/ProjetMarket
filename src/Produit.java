@@ -11,12 +11,13 @@ public class Produit {
     private String categorie;
     private String marque;
     private String nutriscore;
+    private boolean isBio;
 
 
     // CONSTRUCTEURS
 
     // Constructeur complet
-    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids, String categorie, String marque, String nutriscore) {
+    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids, String categorie, String marque, String nutriscore, boolean bio) {
         this.idProduit = idProduit;
         this.libelle = libelle;
         this.prixUnitaire = prixUnitaire;
@@ -25,6 +26,7 @@ public class Produit {
         this.categorie = categorie;
         this.marque = marque;
         this.nutriscore = nutriscore;
+        this.isBio = bio;
     }
 
 
@@ -56,6 +58,7 @@ public class Produit {
         this.nutriscore = result.get(0).get(5);
         this.categorie = result.get(0).get(6);
         this.marque = result.get(0).get(7);
+        this.isBio = Boolean.parseBoolean(result.get(0).get(8));
     }
 
     // Constructeur par copie
@@ -85,8 +88,17 @@ public class Produit {
                 ", a pour poids " + poids + "g" +
                 ", a pour categorie '" + categorie + '\'' +
                 ", a pour marque '" + marque + '\'' +
-                ", et a pour nutriscore '" + nutriscore + '\'' +
+                ", a pour nutriscore '" + nutriscore + '\'' +
+                ", et est " + (isBio ? "bio" : "non-bio") +
                 '.';
+    }
+
+    public boolean isBio() {
+        return isBio;
+    }
+
+    public void setBio(boolean bio) {
+        isBio = bio;
     }
 
     public int getIdProduit() {
