@@ -31,15 +31,13 @@ public class Produit {
 
 
     // Constructeur par l'id du produit
-    public Produit(int idProduit) {
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(),ProjectConfig.getPassword());
+    public Produit(int idProduit, JDBC database) {
         List<List<String>> result = database.executeQuery("SELECT * FROM Produit WHERE produitId = " + idProduit);
         if (!result.isEmpty()) ContructFromBd(result);
         else System.out.println("Produit non trouvé");
     }
 
-    public Produit(String libelle) {
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(),ProjectConfig.getPassword());
+    public Produit(String libelle, JDBC database) {
         List<List<String>> result = database.executeQuery("SELECT * FROM Produit WHERE NomProd = '" + libelle + "'");
         if (!result.isEmpty()) ContructFromBd(result);
         else System.out.println("Produit non trouvé");

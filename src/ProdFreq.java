@@ -2,9 +2,8 @@ import java.util.List;
 
 public class ProdFreq {
     // US2.1
-    public static List<List<String>> getFrequentOrder(int clientId) {
+    public static List<List<String>> getFrequentOrder(int clientId, JDBC database) {
         // Connexion à la base de données via JDBC
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
         String query = "SELECT p.NomProd, COUNT(com.ProduitId) AS frequence_commande "
                 + "FROM Commande c, Composer com, Produit p "

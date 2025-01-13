@@ -14,11 +14,11 @@ public class Profil {
     private JDBC database;
 
 
-    public Profil(int idClient) {
+    public Profil(int idClient, JDBC database) {
         this.idClient = idClient;
         this.nomProfils = new ArrayList<>();
         this.ArticlesPref = new ArrayList<>();
-        database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+        this.database = database;
         List<List<String>> result = database.executeQuery("SELECT p.* FROM TypesDeProfil p, Appartenir_Type t WHERE t.clientId = " + idClient+ " AND p.ProfilId = t.ProfilId" );
         setArticlesPref();
 
@@ -117,7 +117,7 @@ public class Profil {
     public void setArticlesPref() {
         List<List<String>> result = database.executeQuery("SELECT ProduitId From Preferer WHERE ClientId = " + idClient);
         for (List<String> l : result) {
-            ArticlesPref.add(new Produit(Integer.parseInt(l.get(0))));
+            ArticlesPref.add(new Produit(Integer.parseInt(l.get(0)), database));
         }
     }
 

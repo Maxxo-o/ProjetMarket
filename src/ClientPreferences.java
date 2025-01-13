@@ -4,9 +4,7 @@ import java.util.List;
 public class ClientPreferences {
 
     // Méthode pour récupérer tous les résultats pour un client donné
-    public static List<List<String>> getClientPreferences(int clientId) {
-        // Connexion à la base de données via JDBC
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+    public static List<List<String>> getClientPreferences(int clientId, JDBC database) {
 
         // Initialisation de la liste pour stocker tous les résultats sous forme de List<List<String>>
         List<List<String>> allResults = new ArrayList<>();

@@ -11,11 +11,11 @@ public class Panier {
     private JDBC database;
     private Timestamp start;
 
-    public Panier(int idMagasin) {
+    public Panier(int idMagasin, JDBC database) {
         this.produits = new HashMap<>();
         this.prixTotal = 0;
         this.idMagasin = idMagasin;
-        this.database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+        this.database = database;
         this.start = Timestamp.valueOf(LocalDateTime.now());
     }
 
@@ -23,7 +23,7 @@ public class Panier {
         this.produits = p.produits;
         this.prixTotal = p.prixTotal;
         this.idMagasin = p.idMagasin;
-        this.database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+        this.database = p.database;
         this.start = p.start;
     }
 

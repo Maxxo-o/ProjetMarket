@@ -3,8 +3,7 @@ import java.util.List;
 
 public class Remplacement {
     private static List<Produit> produitsRemplacement;
-    public static List<Produit> Recommander(Profil prof , Produit prod, int idMagasin){
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+    public static List<Produit> Recommander(Profil prof , Produit prod, int idMagasin, JDBC database){
         produitsRemplacement = new ArrayList<>();
 
         // Regarder dans la liste des produits préférés du client en premier

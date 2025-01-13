@@ -11,8 +11,9 @@ public class Client {
     private Profil profil;
     private String sexe;
     private int idMagasin;
+    private JDBC database;
 
-    public Client(int idClient, String Nom, String Prenom, int Age, String sexe, String Adresse, Profil profil, int magasinId) {
+    public Client(int idClient, String Nom, String Prenom, int Age, String sexe, String Adresse, Profil profil, int magasinId, JDBC database) {
         this.idClient = idClient;
         this.Nom = Nom;
         this.Prenom = Prenom;
@@ -20,12 +21,12 @@ public class Client {
         this.sexe = sexe;
         this.Adresse = Adresse;
         this.idMagasin = magasinId;
-        this.panier = new Panier(magasinId);
+        this.database = database;
+        this.panier = new Panier(magasinId, database);
         this.profil = profil;
     }
 
-    public Client(int idClient, int magasinId, Profil profil) {
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
+    public Client(int idClient, int magasinId, Profil profil, JDBC database) {
 
         List<List<String>> result = database.executeQuery("SELECT * FROM Client WHERE clientId = " + idClient);
 
@@ -35,8 +36,8 @@ public class Client {
         this.Age = Integer.parseInt(result.get(0).get(3));
         this.sexe = result.get(0).get(4);
         this.Adresse = result.get(0).get(5);
-
-        this.panier = new Panier(magasinId);
+        this.database = database;
+        this.panier = new Panier(magasinId, database);
         this.idMagasin = magasinId;
         this.profil = profil;
 
@@ -45,7 +46,6 @@ public class Client {
 
 
     public void validatePanier(){
-        JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
 
         for (Produit p : panier.getProduits().keySet()) {
             List<List<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin);
@@ -95,7 +95,7 @@ public class Client {
         }
         else {
             System.out.println("Le produit n'est pas disponible dans ce magasin");
-            List<Produit> recommandations = Remplacement.Recommander(profil, p, idMagasin);
+            List<Produit> recommandations = Remplacement.Recommander(profil, p, idMagasin, database);
             System.out.println("Voici quelques recommandations : ");
             for (Produit recommandation : recommandations){
                 System.out.println("- Proposition "+ (recommandations.indexOf(recommandation)+1)+": " +recommandation.getLibelle());
@@ -108,7 +108,6 @@ public class Client {
                 Produit produit = recommandations.get(Integer.parseInt(nomProduit)-1);
 
                 this.addProduct(produit, quantite);
-                JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
                 if (!profil.getArticlesPref().contains(produit)) {
                     this.profil.getArticlesPref().add(produit);
                     database.execute("INSERT INTO Preferer (ProduitId,ClientId) VALUES (" + produit.getIdProduit() + ", " + idClient + ")");
@@ -168,7 +167,7 @@ public class Client {
 
     public Panier getPanier() {
         if (panier == null){
-            panier = new Panier(idMagasin);
+            panier = new Panier(idMagasin, database);
         }
         return panier;
     }
@@ -189,7 +188,7 @@ public class Client {
 
     public void setIdMagasin(int idMagasin) {
         this.idMagasin = idMagasin;
-        panier = new Panier(idMagasin);
+        panier = new Panier(idMagasin, database);
     }
 
     public int getIdMagasin() {
