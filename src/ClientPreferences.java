@@ -11,7 +11,7 @@ public class ClientPreferences {
 
         // 1. Nutriscore le plus commandé
         String nutriscoreQuery = "SELECT CASE " +
-                "    WHEN p.Nutriscore = ' ' THEN 'Produit sans Nutriscore' " +
+                "    WHEN p.Nutriscore IS NULL THEN 'Produit sans Nutriscore' " +
                 "    ELSE p.Nutriscore " +
                 "END AS NutriscoreLePlusCommande " +
                 "FROM Produit p " +
