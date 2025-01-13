@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -96,7 +95,7 @@ public class Client {
         }
         else {
             System.out.println("Le produit n'est pas disponible dans ce magasin");
-            List<Produit> recommandations = Recommandation.Recommander(profil, p, idMagasin);
+            List<Produit> recommandations = Remplacement.Recommander(profil, p, idMagasin);
             System.out.println("Voici quelques recommandations : ");
             for (Produit recommandation : recommandations){
                 System.out.println("- Proposition "+ (recommandations.indexOf(recommandation)+1)+": " +recommandation.getLibelle());

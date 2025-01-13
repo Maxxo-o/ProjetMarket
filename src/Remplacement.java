@@ -1,31 +1,31 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Recommandation {
-    private static List<Produit> recommandations;
+public class Remplacement {
+    private static List<Produit> produitsRemplacement;
     public static List<Produit> Recommander(Profil prof , Produit prod, int idMagasin){
         JDBC database = new JDBC(ProjectConfig.getURL(), ProjectConfig.getUsername(), ProjectConfig.getPassword());
-        recommandations = new ArrayList<>();
+        produitsRemplacement = new ArrayList<>();
 
         // Regarder dans la liste des produits préférés du client en premier
 
         List<Produit> articlesPref =  prof.getArticlesPref();
 
         //filtrer les produits préférés par catégorie, marque et nutriscore
-        recommandations.addAll(filtrerProduits(articlesPref, prod.getCategorie(), prod.getMarque(), prod.getNutriscore(),prod.getPrixUnitaire()));
-        if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+        produitsRemplacement.addAll(filtrerProduits(articlesPref, prod.getCategorie(), prod.getMarque(), prod.getNutriscore(),prod.getPrixUnitaire()));
+        if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
         //filtrer les produits préférés par catégorie et marque
-        recommandations.addAll(filtrerProduits(articlesPref, prod.getCategorie(), prod.getMarque(), null,prod.getPrixUnitaire()));
-        if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+        produitsRemplacement.addAll(filtrerProduits(articlesPref, prod.getCategorie(), prod.getMarque(), null,prod.getPrixUnitaire()));
+        if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
         //filtrer les produits préférés par catégorie
-        recommandations.addAll(filtrerProduits(articlesPref, prod.getCategorie(), null, null,prod.getPrixUnitaire()));
-        if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+        produitsRemplacement.addAll(filtrerProduits(articlesPref, prod.getCategorie(), null, null,prod.getPrixUnitaire()));
+        if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
         //filtrer les produits préférés par catégorie
-        recommandations.addAll(filtrerProduits(articlesPref, prod.getCategorie(), null, null,0));
-        if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+        produitsRemplacement.addAll(filtrerProduits(articlesPref, prod.getCategorie(), null, null,0));
+        if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
         // PASSER PAR LES PRODUITS ASSOCIES AUX TYPES DE PROFILS DU CLIENT
         if (!prof.getNomProfils().isEmpty()) {
@@ -60,20 +60,20 @@ public class Recommandation {
             }
 
             //filtrer les produits préférés par catégorie, marque et nutriscore
-            recommandations.addAll(filtrerProduits(produitsCategorieProfil, null, prod.getMarque(), prod.getNutriscore(), prod.getPrixUnitaire()));
-            if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+            produitsRemplacement.addAll(filtrerProduits(produitsCategorieProfil, null, prod.getMarque(), prod.getNutriscore(), prod.getPrixUnitaire()));
+            if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
             //filtrer les produits préférés par catégorie et marque
-            recommandations.addAll(filtrerProduits(produitsCategorieProfil, null, prod.getMarque(), null, prod.getPrixUnitaire()));
-            if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+            produitsRemplacement.addAll(filtrerProduits(produitsCategorieProfil, null, prod.getMarque(), null, prod.getPrixUnitaire()));
+            if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
             //filtrer les produits préférés par catégorie
-            recommandations.addAll(filtrerProduits(produitsCategorieProfil, null, null, null, prod.getPrixUnitaire()));
-            if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+            produitsRemplacement.addAll(filtrerProduits(produitsCategorieProfil, null, null, null, prod.getPrixUnitaire()));
+            if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
             //filtrer les produits préférés par catégorie
-            recommandations.addAll(filtrerProduits(produitsCategorieProfil, null, null, null, 0));
-            if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+            produitsRemplacement.addAll(filtrerProduits(produitsCategorieProfil, null, null, null, 0));
+            if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
         }
 
         // Récupérer les produits de la même catégorie
@@ -91,20 +91,20 @@ public class Recommandation {
         }
 
         //filtrer les produits de la même catégorie par marque et nutriscore
-        recommandations.addAll(filtrerProduits(produitsCategorie, null, prod.getMarque(), prod.getNutriscore(),prod.getPrixUnitaire()));
-        if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+        produitsRemplacement.addAll(filtrerProduits(produitsCategorie, null, prod.getMarque(), prod.getNutriscore(),prod.getPrixUnitaire()));
+        if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
         //filtrer les produits de la même catégorie par marque
-        recommandations.addAll(filtrerProduits(produitsCategorie, null, prod.getMarque(), null,prod.getPrixUnitaire()));
-        if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+        produitsRemplacement.addAll(filtrerProduits(produitsCategorie, null, prod.getMarque(), null,prod.getPrixUnitaire()));
+        if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
-        recommandations.addAll(filtrerProduits(produitsCategorie, null, null, null,prod.getPrixUnitaire()));
-        if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+        produitsRemplacement.addAll(filtrerProduits(produitsCategorie, null, null, null,prod.getPrixUnitaire()));
+        if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
-        recommandations.addAll(filtrerProduits(produitsCategorie, null, null, null,0));
-        if (recommandations.size() >= 3) return recommandations.subList(0, 3);
+        produitsRemplacement.addAll(filtrerProduits(produitsCategorie, null, null, null,0));
+        if (produitsRemplacement.size() >= 3) return produitsRemplacement.subList(0, 3);
 
-        return recommandations;
+        return produitsRemplacement;
     }
 
 
@@ -116,7 +116,7 @@ public class Recommandation {
                 .filter(produit -> marque == null || produit.getMarque().equals(marque))
                 .filter(produit -> nutriscore == null || produit.getNutriscore().equals(nutriscore))
                 .filter(produit -> prixProd == 0 || produit.getPrixUnitaire() <= prixProd*1.2)
-                .filter(produit -> !recommandations.contains(produit))
+                .filter(produit -> !produitsRemplacement.contains(produit))
                 .toList();
     }
 }
