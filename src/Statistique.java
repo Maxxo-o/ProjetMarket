@@ -17,12 +17,12 @@ public class Statistique {
                         COUNT(CommandeId) AS \"Nombre de commande\",
                         SUM(QteCom) AS \"Quantité vendu\",
                         SUM(
-                        CASE
-                            WHEN PrixUnitaire IS NOT NULL
-                            THEN QteCom * PrixUnitaire
-                            ELSE QteCom * PrixAuKg * Poids
-                        END
-                    ) AS \"CA\"
+                            CASE
+                                WHEN PrixUnitaire IS NOT NULL
+                                THEN QteCom * PrixUnitaire
+                                ELSE QteCom * PrixAuKg * Poids
+                            END
+                        ) AS \"CA\"
                     FROM Produit
                     JOIN Composer ON Produit.ProduitId = Composer.ProduitId
                     GROUP BY
@@ -33,27 +33,44 @@ public class Statistique {
                     """, conditions.get(condition)));
             return queryResult;
         } else {
-            System.err.println("Invalid condition");
+            System.err.println("Invalid condition\n");
             return null;
         }
     }
 
     public static List<List<String>> categorie(JDBC database, String condition) {
-        // Catégories manquants
         Map<String, String> conditions = new HashMap<>(Map.of(
                 "Le plus commendé", "Nombre de commande",
                 "Le plus vendu", "Quantité vendu",
                 "Le plus grand CA", "CA"));
 
-        List<List<String>> queryResult = database.executeQuery("""
-                SELECT
+        // Catégories manquants
+        if (conditions.containsKey(condition)) {
+            List<List<String>> queryResult = database.executeQuery(String.format("""
+                    SELECT
 
-                FROM
-                GROUP BY
-
-                """);
-
-        return queryResult;
+                        COUNT(CommandeId) AS \"Nombre de commande\",
+                        SUM(QteCom) AS \"Quantité vendu\",
+                        SUM(
+                            CASE
+                                WHEN PrixUnitaire IS NOT NULL
+                                THEN QteCom * PrixUnitaire
+                                ELSE QteCom * PrixAuKg * Poids
+                            END
+                        ) AS \"CA\"
+                    FROM Produit
+                    JOIN Composer ON Produit.ProduitId = Composer.ProduitId
+                    GROUP BY
+                        Produit.ProduitId,
+                        NomProd
+                    ORDER BY
+                        \"%s\" DESC
+                    """, conditions.get(condition)));
+            return queryResult;
+        } else {
+            System.err.println("Invalid condition\n");
+            return null;
+        }
     }
 
     public static List<List<String>> client(JDBC database, String condition) {
@@ -62,32 +79,36 @@ public class Statistique {
                 "Le plus acheté", "Quantité acheté",
                 "Le plus grand CA", "CA"));
 
-        List<List<String>> queryResult = database.executeQuery(String.format("""
-                SELECT
-                    Client.ClientId,
-                    Nom,
-                    Prenom,
-                    COUNT(Commande.CommandeId) AS \"Nombre de commande\",
-                    SUM(QteCom) AS \"Quantité acheté\",
-                    SUM(
-                        CASE
-                            WHEN PrixUnitaire IS NOT NULL
-                            THEN QteCom * PrixUnitaire
-                            ELSE QteCom * PrixAuKg * Poids
-                        END
-                    ) AS \"CA\"
-                FROM Client
-                JOIN Commande ON Client.ClientId = Commande.ClientId
-                JOIN Composer ON Commande.CommandeId = Composer.CommandeId
-                JOIN Produit ON Composer.ProduitId = Produit.ProduitId
-                GROUP BY
-                    Client.ClientId,
-                    Nom,
-                    Prenom
-                ORDER BY
-                    \"%s\" DESC
-                """, conditions.get(condition)));
-
-        return queryResult;
+        if (conditions.containsKey(condition)) {
+            List<List<String>> queryResult = database.executeQuery(String.format("""
+                    SELECT
+                        Client.ClientId,
+                        Nom,
+                        Prenom,
+                        COUNT(Commande.CommandeId) AS \"Nombre de commande\",
+                        SUM(QteCom) AS \"Quantité acheté\",
+                        SUM(
+                            CASE
+                                WHEN PrixUnitaire IS NOT NULL
+                                THEN QteCom * PrixUnitaire
+                                ELSE QteCom * PrixAuKg * Poids
+                            END
+                        ) AS \"CA\"
+                    FROM Client
+                    JOIN Commande ON Client.ClientId = Commande.ClientId
+                    JOIN Composer ON Commande.CommandeId = Composer.CommandeId
+                    JOIN Produit ON Composer.ProduitId = Produit.ProduitId
+                    GROUP BY
+                        Client.ClientId,
+                        Nom,
+                        Prenom
+                    ORDER BY
+                        \"%s\" DESC
+                    """, conditions.get(condition)));
+            return queryResult;
+        } else {
+            System.err.println("Invalid condition\n");
+            return null;
+        }
     }
 }
