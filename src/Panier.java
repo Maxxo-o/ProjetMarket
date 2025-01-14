@@ -1,6 +1,5 @@
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +19,8 @@ public class Panier {
     }
 
     public Panier(Panier p) {
-        this.produits = p.produits;
+        this.produits = new HashMap<>();
+        this.produits.putAll(p.produits);
         this.prixTotal = p.prixTotal;
         this.idMagasin = p.idMagasin;
         this.database = p.database;
