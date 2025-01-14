@@ -130,4 +130,93 @@ public class ClientPreferences {
         // Retourne tous les résultats sous forme de List<List<String>>
         return allResults;
     }
+
+    public static List<String> detectNewHabits(int clientId, JDBC database) {
+        List<String> newHabits = new ArrayList<>();
+
+        // Commandes récentes (30 derniers jours)
+        String recentQuery = "SELECT DISTINCT p.Categorie, p.Marque, p.ProduitId " +
+                "FROM Produit p " +
+                "JOIN Composer c ON p.ProduitId = c.ProduitId " +
+                "JOIN Commande cmd ON c.CommandeId = cmd.CommandeId " +
+                "WHERE cmd.ClientId = " + clientId + " AND cmd.DateCommande > SYSDATE - 30";
+
+        List<List<String>> recentResults = database.executeQuery(recentQuery);
+
+        // Commandes anciennes (avant 30 jours)
+        String oldQuery = "SELECT DISTINCT p.Categorie, p.Marque, p.ProduitId " +
+                "FROM Produit p " +
+                "JOIN Composer c ON p.ProduitId = c.ProduitId " +
+                "JOIN Commande cmd ON c.CommandeId = cmd.CommandeId " +
+                "WHERE cmd.ClientId = " + clientId + " AND cmd.DateCommande <= SYSDATE - 30";
+
+        List<List<String>> oldResults = database.executeQuery(oldQuery);
+
+        // Identifier les nouvelles catégories
+        List<String> oldCategories = new ArrayList<>();
+        for (List<String> oldRow : oldResults) {
+            oldCategories.add(oldRow.get(0)); // Catégorie dans l'ancienne liste
+        }
+
+        for (List<String> recentRow : recentResults) {
+            String recentCategory = recentRow.get(0); // Catégorie dans la liste récente
+            if (!oldCategories.contains(recentCategory)) {
+                if (!newHabits.contains("Nouvelle catégorie : " + recentCategory)) {
+                    newHabits.add("Nouvelle catégorie : " + recentCategory);
+                }
+            }
+        }
+
+        // Identifier les nouvelles marques
+        List<String> oldBrands = new ArrayList<>();
+        for (List<String> oldRow : oldResults) {
+            oldBrands.add(oldRow.get(1)); // Marque dans l'ancienne liste
+        }
+
+        for (List<String> recentRow : recentResults) {
+            String recentBrand = recentRow.get(1); // Marque dans la liste récente
+            if (!oldBrands.contains(recentBrand)) {
+                if (!newHabits.contains("Nouvelle marque : " + recentBrand)) {
+                    newHabits.add("Nouvelle marque : " + recentBrand);
+                }
+            }
+        }
+
+        // Identifier les nouveaux produits et récupérer leurs noms
+        List<String> oldProducts = new ArrayList<>();
+        for (List<String> oldRow : oldResults) {
+            oldProducts.add(oldRow.get(2)); // Produit ID dans l'ancienne liste
+        }
+
+        for (List<String> recentRow : recentResults) {
+            String recentProductId = recentRow.get(2); // Produit ID dans la liste récente
+
+            // Vérifier si le produit est déjà dans les anciennes habitudes ou déjà inséré
+            String checkQuery = "SELECT 1 FROM Preferer WHERE ProduitId = '" + recentProductId + "' AND ClientId = '" + clientId + "'";
+
+            List<List<String>> checkResult = database.executeQuery(checkQuery);
+
+            if (checkResult == null || checkResult.isEmpty()) {
+                // Insérer dans la table Preferer
+                String insertQuery = "INSERT INTO Preferer (ProduitId, ClientId) VALUES (" +recentProductId+ "," +clientId+ ")";
+                database.executeUpdate(insertQuery);
+
+                // Récupérer le nom du produit pour l'ajouter aux nouvelles habitudes
+                String productNameQuery = "SELECT NomProd FROM Produit WHERE ProduitId = " + recentProductId;
+                List<List<String>> productNameResult = database.executeQuery(productNameQuery);
+                if (!productNameResult.isEmpty()) {
+                    String productName = productNameResult.get(0).get(0);
+                    newHabits.add("Nouveau produit : " + productName);
+                }
+            } else {
+                System.out.println("Produit déjà présent dans la table Preferer : ProduitId = " + recentProductId);
+            }
+        }
+
+
+
+        return newHabits;
+    }
+
+
 }
