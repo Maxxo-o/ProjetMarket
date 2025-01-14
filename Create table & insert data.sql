@@ -14,6 +14,8 @@ DROP TABLE Repartir CASCADE CONSTRAINTS;
 DROP TABLE Composer CASCADE CONSTRAINTS;
 DROP TABLE Correspondre CASCADE CONSTRAINTS;
 DROP TABLE Lier CASCADE CONSTRAINTS;
+DROP TABLE Recommander CASCADE CONSTRAINTS;
+
 
 
 
@@ -132,8 +134,8 @@ CREATE TABLE Correspondre (
     CONSTRAINT FK_Correspondre_Produit FOREIGN KEY (ProduitId) REFERENCES Produit(ProduitId),
     CONSTRAINT FK_Correspondre_Profil FOREIGN KEY (ProfilId) REFERENCES TypesDeProfil(ProfilId)
 );
--- Table Lier
-CREATE TABLE Lier (
+-- Table Recommander
+CREATE TABLE Recommander (
     ProduitId_est_lié VARCHAR(50) NOT NULL,
     ProduitId VARCHAR(50) NOT NULL,
     CONSTRAINT fk_produit_est_lié FOREIGN KEY (ProduitId_est_lié) REFERENCES Produit(ProduitId),
@@ -402,15 +404,64 @@ SELECT TO_DATE('2024-07-14', 'YYYY-MM-DD'), 10, '40', 'En attente de livraison' 
 -- Table Composer
 INSERT ALL
     INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('2', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('3', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 4)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 1)
-
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 4)
+    
     INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('2', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 5)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('3', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('14', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 5)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 2)
     INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 3)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 3), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('7', (SELECT CommandeId FROM Commande WHERE CommandeId = 3), 2)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 4), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 4), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('3', (SELECT CommandeId FROM Commande WHERE CommandeId = 4), 4)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 5), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 5), 1)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 5), 3)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 6), 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('2', (SELECT CommandeId FROM Commande WHERE CommandeId = 6), 2)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 7), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('5', (SELECT CommandeId FROM Commande WHERE CommandeId = 7), 1)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 8), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('20', (SELECT CommandeId FROM Commande WHERE CommandeId = 8), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 8), 4)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 9), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 9), 3)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 10), 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 10), 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 10), 4)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 11), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 11), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 11), 1)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 12), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('2', (SELECT CommandeId FROM Commande WHERE CommandeId = 12), 5)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 13), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('7', (SELECT CommandeId FROM Commande WHERE CommandeId = 13), 3)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 14), 2)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 15), 3)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 16), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 16), 3)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 17), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 17), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 17), 3)
 SELECT * FROM dual;
+
 
 
 
@@ -507,69 +558,79 @@ SELECT * FROM dual;
 
 
 
--- Table Lier
+-- Table Recommander
 INSERT ALL
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (1, 5)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (1, 8)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (1, 12)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (2, 7)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (2, 19)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (2, 14)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (3, 10)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (3, 18)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (3, 6)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (4, 13)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (4, 9)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (4, 2)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (5, 15)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (5, 20)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (5, 1)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (6, 2)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (6, 4)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (6, 17)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (7, 12)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (7, 9)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (7, 8)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (8, 16)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (8, 3)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (8, 19)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (9, 6)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (9, 13)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (9, 7)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (10, 18)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (10, 11)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (10, 20)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (11, 15)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (11, 2)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (11, 5)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (12, 1)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (12, 3)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (12, 8)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (13, 4)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (13, 9)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (13, 7)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (14, 11)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (14, 19)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (14, 10)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (15, 20)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (15, 12)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (15, 6)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (16, 18)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (16, 3)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (16, 5)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (17, 8)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (17, 1)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (17, 13)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (18, 14)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (18, 9)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (18, 20)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (19, 7)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (19, 6)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (19, 4)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (20, 11)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (20, 2)
-    INTO Lier (ProduitId_est_lié, ProduitId) VALUES (20, 15)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (1, 5)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (1, 8)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (1, 12)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (2, 7)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (2, 19)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (2, 14)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (3, 10)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (3, 18)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (3, 6)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (4, 13)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (4, 9)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (4, 2)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (5, 15)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (5, 20)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (5, 1)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (6, 2)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (6, 4)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (6, 17)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (7, 12)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (7, 9)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (7, 8)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (8, 16)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (8, 3)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (8, 19)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (9, 6)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (9, 13)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (9, 7)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (10, 18)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (10, 11)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (10, 20)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (11, 15)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (11, 2)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (11, 5)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (12, 1)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (12, 3)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (12, 8)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (13, 4)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (13, 9)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (13, 7)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (14, 11)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (14, 19)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (14, 10)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (15, 20)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (15, 12)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (15, 6)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (16, 18)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (16, 3)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (16, 5)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (17, 8)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (17, 1)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (17, 13)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (18, 14)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (18, 9)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (18, 20)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (19, 7)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (19, 6)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (19, 4)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (20, 11)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (20, 2)
+    INTO Recommander (ProduitId_est_lié, ProduitId) VALUES (20, 15)
 SELECT * FROM DUAL;
+
+
+
+-- Table Periode
+INSERT ALL
+    INTO Periode (PeriodeId, NomPeriode, DebutPeriode, FinPeriode) VALUES (1, 'Hiver', TO_DATE('12-01', 'MM-DD'), TO_DATE('02-28', 'MM-DD'))
+    INTO Periode (PeriodeId, NomPeriode, DebutPeriode, FinPeriode) VALUES (2, 'Noël', TO_DATE('12-24', 'MM-DD'), TO_DATE('12-26', 'MM-DD'))
+    INTO Periode (PeriodeId, NomPeriode, DebutPeriode, FinPeriode) VALUES (3, 'Été', TO_DATE('06-01', 'MM-DD'), TO_DATE('08-31', 'MM-DD'))
+    INTO Periode (PeriodeId, NomPeriode, DebutPeriode, FinPeriode) VALUES (4, 'Saint-Valentin', TO_DATE('02-14', 'MM-DD'), TO_DATE('02-14', 'MM-DD'))
+SELECT * FROM dual;
 
 
 
