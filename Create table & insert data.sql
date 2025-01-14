@@ -403,64 +403,121 @@ SELECT TO_DATE('2024-07-14', 'YYYY-MM-DD'), 10, '40', 'En attente de livraison' 
 
 -- Table Composer
 INSERT ALL
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 1), 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 1, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 1, 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 1, 4)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('14', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 5)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 2), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 2, 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('14', 2, 5)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 2, 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 2, 3)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 3), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('7', (SELECT CommandeId FROM Commande WHERE CommandeId = 3), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 3, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('7', 3, 2)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 4), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 4), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('3', (SELECT CommandeId FROM Commande WHERE CommandeId = 4), 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 4, 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 4, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('3', 4, 4)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 5), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 5), 1)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 5), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 5, 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 5, 1)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 5, 3)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 6), 4)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('2', (SELECT CommandeId FROM Commande WHERE CommandeId = 6), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 6, 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('2', 6, 2)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 7), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('5', (SELECT CommandeId FROM Commande WHERE CommandeId = 7), 1)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 7, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('5', 7, 1)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 8), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('20', (SELECT CommandeId FROM Commande WHERE CommandeId = 8), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 8), 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 8, 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('20', 8, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 8, 4)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 9), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 9), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 9, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 9, 3)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 10), 4)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 10), 4)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 10), 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 10, 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 10, 4)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 10, 4)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 11), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 11), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 11), 1)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 11, 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 11, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 11, 1)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 12), 2)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('2', (SELECT CommandeId FROM Commande WHERE CommandeId = 12), 5)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 12, 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('2', 12, 5)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 13), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('7', (SELECT CommandeId FROM Commande WHERE CommandeId = 13), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 13, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('7', 13, 3)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 14), 2)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 14, 2)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 15), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 15, 3)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 16), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 16), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 16, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 16, 3)
     
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', (SELECT CommandeId FROM Commande WHERE CommandeId = 17), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', (SELECT CommandeId FROM Commande WHERE CommandeId = 17), 3)
-    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', (SELECT CommandeId FROM Commande WHERE CommandeId = 17), 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 17, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 17, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 17, 3)
+    
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 18, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 18, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 18, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 19, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 19, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 19, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 20, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 20, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 20, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 21, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 21, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 21, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 22, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 22, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 22, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 23, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 23, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 23, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 24, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 24, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 24, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 25, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 25, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 25, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 26, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 26, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 26, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 27, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 27, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 27, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 28, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 28, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 28, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 29, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 29, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 29, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 30, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 30, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 30, 3)
+
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('1', 31, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('4', 31, 3)
+    INTO Composer (ProduitId, CommandeId, QteCom) VALUES ('15', 31, 3)
 SELECT * FROM dual;
+
 
 
 
