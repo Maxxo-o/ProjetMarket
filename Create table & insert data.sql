@@ -17,6 +17,7 @@ DROP TABLE Periode CASCADE CONSTRAINTS;
 DROP TABLE Approprier CASCADE CONSTRAINTS;
 DROP TABLE Etre CASCADE CONSTRAINTS;
 DROP TABLE Categorie CASCADE CONSTRAINTS;
+DROP TABLE Associer CASCADE CONSTRAINTS;
 
 
 
@@ -29,7 +30,6 @@ CREATE TABLE Produit (
     PrixUnitaire DECIMAL(10, 2),
     Poids DECIMAL(10, 2) NULL,
     Nutriscore CHAR(1) NULL CHECK (Nutriscore IN ('A', 'B', 'C', 'D', 'E')),
-    Categorie VARCHAR(50) NOT NULL,
     Marque VARCHAR(50) NOT NULL,
     Bio VARCHAR2(5) CHECK (Bio IN ('TRUE', 'FALSE'))
 );
@@ -181,114 +181,295 @@ CREATE TABLE Approprier (
     CONSTRAINT FK_Approprier_Periode FOREIGN KEY (PeriodeId) REFERENCES Periode(PeriodeId) ON DELETE CASCADE
 );
 
+-- Table Associer
+CREATE TABLE Associer (
+    ProduitId INT,
+    CategorieId INT,
+    FOREIGN KEY (ProduitId) REFERENCES Produit(ProduitId),
+    FOREIGN KEY (CategorieId) REFERENCES Categorie(CategorieId),
+    PRIMARY KEY (ProduitId, CategorieId)
+);
+
 
 
 -- Table Produit
 INSERT ALL
-	INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (1, 'Spaghetti', NULL, 1.50, 500, 'B', 'Pâtes', 'Panzani', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (2, 'Piles AA', NULL, 4.99, NULL, null, 'Électronique', 'Duracell', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (3, 'Couches Bébé Taille 3', NULL, 18.99, NULL, null, 'Hygiène', 'Pampers', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (4, 'Sauce Ketchup', 3.98, 2.50, 750, 'C', 'Condiments', 'Heinz', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (5, 'Saumon Fumé', 35.00, NULL, 200, 'B', 'Poisson', 'Labeyrie', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (6, 'Banane', 1.50, NULL, 120, 'A', 'Fruits', 'Chiquita', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (7, 'Pomme', 2.20, NULL, 150, 'A', 'Fruits', 'Pink Lady', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (8, 'Liquide Vaisselle', NULL, 2.75, NULL, null, 'Entretien', 'Paic', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (9, 'Yaourt Nature', NULL, 2.99, 500, 'A', 'Produits Laitiers', 'Danone', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (10, 'Eau Minérale 1L', NULL, 0.60, 1000, 'A', 'Boissons', 'Evian', 'FALSE')   
-   
-   
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('1', 'Spaghetti', NULL, 1.50, 500, 'B', 'Panzani', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('2', 'Piles AA', NULL, 4.99, NULL, NULL, 'Duracell', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('3', 'Couches Bébé Taille 3', NULL, 18.99, NULL, NULL, 'Pampers', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('4', 'Sauce Ketchup', 3.98, 2.50, 750, 'C', 'Heinz', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('5', 'Saumon Fumé', 35.00, NULL, 200, 'B', 'Labeyrie', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('6', 'Banane', 1.50, NULL, 120, 'A', 'Chiquita', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('7', 'Pomme', 2.20, NULL, 150, 'A', 'Pink Lady', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('8', 'Liquide Vaisselle', NULL, 2.75, NULL, NULL, 'Paic', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('9', 'Yaourt Nature', NULL, 2.99, 500, 'A', 'Danone', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('10', 'Eau Minérale 1L', NULL, 0.60, 1000, 'A', 'Evian', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('11', 'Céréales Chocolatées', NULL, 4.50, 500, 'C', 'Kellogg''s', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('12', 'Poulet Rôti', 8.50, NULL, 1000, 'C', 'Le Gaulois', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('13', 'Pain de Mie', NULL, 1.85, 500, 'B', 'Harry''s', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('14', 'Beurre Demi-Sel', NULL, 2.30, 250, 'A', 'Président', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('15', 'Fromage Râpé', NULL, 3.40, 200, 'B', 'Emmental', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('16', 'Pizza Margherita', NULL, 4.99, 400, 'D', 'Buitoni', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('17', 'Chips Nature', NULL, 1.80, 200, 'C', 'Lay''s', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('18', 'Lait UHT 1L', NULL, 0.95, 1000, 'A', 'Candia', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('19', 'Oeufs x12', NULL, 3.20, NULL, 'A', 'Matines', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('20', 'Riz Basmati', NULL, 2.75, 1000, 'A', 'Taureau Ailé', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('21', 'Farine de Blé', NULL, 1.20, 1000, 'A', 'Francine', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('22', 'Jambon Blanc', 12.00, NULL, 150, 'B', 'Herta', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('23', 'Crème Fraîche', NULL, 2.50, 200, 'B', 'Elle et Vire', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('24', 'Lentilles Vertes', NULL, 2.10, 500, 'A', 'Celnat', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('25', 'Sucre en Poudre', NULL, 1.50, 1000, 'C', 'Daddy', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('26', 'Confiture Fraise', NULL, 2.99, 370, 'B', 'Bonne Maman', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('27', 'Thé Vert', NULL, 3.20, NULL, 'A', 'Lipton', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('28', 'Huile d''Olive', NULL, 5.99, 1000, 'A', 'Puget', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('29', 'Chocolat Noir 70%', NULL, 2.20, 100, 'B', 'Lindt', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('30', 'Moutarde', NULL, 1.75, 200, 'A', 'Amora', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('31', 'Yaourt aux Fruits', NULL, 3.00, 500, 'B', 'Yoplait', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('32', 'Eau Gazeuse 1L', NULL, 0.70, 1000, 'A', 'San Pellegrino', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('33', 'Jus d''Orange', NULL, 2.50, 1000, 'B', 'Tropicana', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('34', 'Poisson Pané', 12.50, NULL, 300, 'C', 'Findus', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('35', 'Sel de Table', NULL, 0.99, 1000, 'C', 'La Baleine', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('36', 'Poivre Noir', NULL, 2.50, 50, 'A', 'Ducros', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('37', 'Bâtonnets Glacés', NULL, 3.99, 400, 'D', 'Magnum', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('38', 'Soupe de Légumes', NULL, 2.99, 1000, 'A', 'Liebig', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('39', 'Gâteau Moelleux', NULL, 3.50, 250, 'C', 'Bonne Maman', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('40', 'Légumes Surgelés', NULL, 2.75, 750, 'A', 'Picard', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('41', 'Boisson Énergisante', NULL, 1.50, 250, 'E', 'Red Bull', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('42', 'Bonbons Gélifiés', NULL, 2.50, 300, 'D', 'Haribo', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('43', 'Pâte à Tartiner', NULL, 3.99, 750, 'D', 'Nutella', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('44', 'Viande Hachée', 10.99, NULL, 500, 'C', 'Charal', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('45', 'Feuilles de Brick', NULL, 2.20, 200, 'A', 'Oriental', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('46', 'Bouillon Cube', NULL, 1.75, 100, 'C', 'Knorr', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('47', 'Tofu Nature', NULL, 2.99, 400, 'A', 'Bjorg', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('48', 'Crêpes au Sucre', NULL, 3.50, 300, 'C', 'Ker Cadélac', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('49', 'Tomates Pelées', NULL, 1.20, 400, 'A', 'Mutti', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio) VALUES ('50', 'Lessive Liquide', NULL, 7.50, 3000, NULL, 'Ariel', 'FALSE')
 
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (11, 'Céréales Chocolatées', NULL, 4.50, 500, 'C', 'Petit-Déjeuner', 'Kellogg''s', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (12, 'Poulet Rôti', 8.50, NULL, 1000, 'C', 'Viandes', 'Le Gaulois', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (13, 'Pain de Mie', NULL, 1.85, 500, 'B', 'Boulangerie', 'Harry''s', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (14, 'Beurre Demi-Sel', NULL, 2.30, 250, 'A', 'Produits Laitiers', 'Président', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (15, 'Fromage Râpé', NULL, 3.40, 200, 'B', 'Produits Laitiers', 'Emmental', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (16, 'Pizza Margherita', NULL, 4.99, 400, 'D', 'Plats Préparés', 'Buitoni', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (17, 'Chips Nature', NULL, 1.80, 200, 'C', 'Snacks', 'Lay''s', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (18, 'Lait UHT 1L', NULL, 0.95, 1000, 'A', 'Produits Laitiers', 'Candia', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (19, 'Oeufs x12', NULL, 3.20, NULL, 'A', 'Produits Frais', 'Matines', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (20, 'Riz Basmati', NULL, 2.75, 1000, 'A', 'Céréales', 'Taureau Ailé', 'TRUE')
 
-
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (21, 'Farine de Blé', NULL, 1.20, 1000, 'A', 'Épicerie', 'Francine', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (22, 'Jambon Blanc', 12.00, NULL, 150, 'B', 'Charcuterie', 'Herta', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (23, 'Crème Fraîche', NULL, 2.50, 200, 'B', 'Produits Laitiers', 'Elle et Vire', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (24, 'Lentilles Vertes', NULL, 2.10, 500, 'A', 'Céréales', 'Celnat', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (25, 'Sucre en Poudre', NULL, 1.50, 1000, 'C', 'Épicerie', 'Daddy', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (26, 'Chocolat Noir', NULL, 2.99, 200, 'B', 'Snacks', 'Lindt', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (27, 'Huile d Olive', NULL, 5.99, 750, 'A', 'Condiments', 'Puget', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (28, 'Cornichons', NULL, 2.75, 400, 'A', 'Condiments', 'Amora', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (29, 'Thé Vert', NULL, 3.99, NULL, 'A', 'Boissons', 'Lipton', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (30, 'Yaourt aux Fruits', NULL, 3.50, 500, 'B', 'Produits Laitiers', 'Activia', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (31, 'Glace à la Vanille', NULL, 4.50, 500, 'C', 'Glaces', 'Magnum', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (32, 'Moutarde', NULL, 1.50, 200, 'A', 'Condiments', 'Dijon', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (33, 'Chocolat au Lait', NULL, 2.20, 150, 'B', 'Snacks', 'Milka', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (34, 'Confiture de Fraises', NULL, 3.99, 370, 'B', 'Épicerie', 'Bonne Maman', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (35, 'Purée de Pommes de Terre', NULL, 2.50, 400, 'C', 'Plats Préparés', 'Cassegrain', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (36, 'Café Moulu', NULL, 3.60, 250, 'A', 'Boissons', 'Carte Noire', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (37, 'Légumes Surgelés', NULL, 2.80, 500, 'A', 'Surgelés', 'Picard', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (38, 'Yaourt Grec', NULL, 1.80, 200, 'A', 'Produits Laitiers', 'Fage', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (39, 'Ail en Gousse', NULL, 0.60, 100, 'A', 'Épicerie', 'Ducros', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (40, 'Vinaigre Balsamique', NULL, 3.40, 500, 'A', 'Condiments', 'Cucina', 'TRUE')
-    
-    
-	INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (41, 'Pâtes de Riz', NULL, 2.60, 300, 'A', 'Pâtes', 'Sabarot', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (42, 'Conserves de Thon', NULL, 2.80, 200, 'C', 'Conserves', 'Charles et Alice', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (43, 'Crème Caramel', NULL, 1.80, 150, 'B', 'Desserts', 'Bonne Maman', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (44, 'Bière Blonde', NULL, 2.50, 500, 'D', 'Boissons', 'Heineken', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (45, 'Chocolat au Lait Praliné', NULL, 3.20, 200, 'C', 'Snacks', 'Lindt', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (46, 'Gel Douche', NULL, 3.20, 300, null, 'Hygiène', 'Dove', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (47, 'Pommes de Terre', 0.95, NULL, 2000, 'A', 'Légumes', 'Agriculteurs Locaux', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (48, 'Epinards Surgelés', NULL, 2.10, 1000, 'A', 'Surgelés', 'Bonduelle', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (49, 'Saucisses de Francfort', 9.00, NULL, 300, 'C', 'Charcuterie', 'Herta', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (50, 'Coca-Cola 1.5L', NULL, 1.50, 1500, 'D', 'Boissons', 'Coca-Cola', 'FALSE')
-    
-    --Jeu de donées pour les pates
-    
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (51, 'Tagliatelles', NULL, 1.80, 500, 'A', 'Pâtes', 'Barilla', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (52, 'Penne Rigate', NULL, 1.40, 400, 'B', 'Pâtes', 'De Cecco', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (53, 'Coquillettes', NULL, 1.20, 300, 'C', 'Pâtes', 'Panzani', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (54, 'Fusilli', NULL, 1.50, 500, 'B', 'Pâtes', 'Rummo', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (55, 'Torsades', NULL, 1.60, 400, 'A', 'Pâtes', 'Barilla', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (56, 'Lasagnes', NULL, 2.00, 300, 'C', 'Pâtes', 'Panzani', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (57, 'Ravioles', NULL, 2.50, 250, 'B', 'Pâtes', 'Giovanni Rana', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (58, 'Coudes', NULL, 1.30, 500, 'A', 'Pâtes', 'Lustucru', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (59, 'Macaroni', NULL, 1.70, 450, 'B', 'Pâtes', 'Barilla', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (60, 'Farfalle', NULL, 1.60, 500, 'A', 'Pâtes', 'De Cecco', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (61, 'Spaghetti Intégrales', NULL, 2.00, 400, 'A', 'Pâtes', 'Rummo', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (62, 'Orecchiette', NULL, 1.90, 350, 'B', 'Pâtes', 'Panzani', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (63, 'Linguine', NULL, 1.80, 450, 'B', 'Pâtes', 'Barilla', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (64, 'Vermicelles', NULL, 1.40, 300, 'C', 'Pâtes', 'Lustucru', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (65, 'Rigatoni', NULL, 1.50, 500, 'A', 'Pâtes', 'De Cecco', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (66, 'Cannelloni', NULL, 2.20, 400, 'B', 'Pâtes', 'Rummo', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (67, 'Capellini', NULL, 1.80, 350, 'A', 'Pâtes', 'Barilla', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (68, 'Fusilli Intégrales', NULL, 2.10, 400, 'A', 'Pâtes', 'Giovanni Rana', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (69, 'Spaghettini', NULL, 1.70, 450, 'B', 'Pâtes', 'De Cecco', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (70, 'Pâtes Aux Légumes', NULL, 2.50, 300, 'A', 'Pâtes', 'Panzani', 'TRUE')
-    
-    --jeu de donénes pour les fruits
-    
-	INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (71, 'Pommes Golden', 2.50, NULL, 1000, 'A', 'Fruits', 'BioVerde', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (72, 'Bananes', 1.80, NULL, 1200, 'A', 'Fruits', 'TropiFruit', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (73, 'Oranges', 2.20, NULL, 1500, 'A', 'Fruits', 'CitrusJoy', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (74, 'Poires Conférence', 2.70, NULL, 1000, 'A', 'Fruits', 'FruitéBio', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (75, 'Kiwis', 3.20, NULL, 500, 'A', 'Fruits', 'GreenZest', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (76, 'Raisins Rouges', 4.00, NULL, 1000, 'A', 'Fruits', 'SunnyVine', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (77, 'Fraises Gariguette', 5.00, NULL, 250, 'A', 'Fruits', 'BerryFresh', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (78, 'Pastèque', 1.50, NULL, 5000, 'A', 'Fruits', 'Tropical', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (79, 'Melon Charentais', 3.00, NULL, 1500, 'A', 'Fruits', 'SummerSweet', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (80, 'Abricots', 4.20, NULL, 1000, 'A', 'Fruits', 'FruitLover', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (81, 'Cerises', 6.50, NULL, 500, 'A', 'Fruits', 'CherryDelight', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (82, 'Pêches Jaunes', 3.80, NULL, 1000, 'A', 'Fruits', 'SunshineFruit', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (83, 'Mangues', 2.50, NULL, 800, 'A', 'Fruits', 'TropiFruit', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (84, 'Ananas', 3.50, NULL, 1500, 'A', 'Fruits', 'ExoticJoy', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (85, 'Framboises', 7.00, NULL, 250, 'A', 'Fruits', 'BerryFresh', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (86, 'Myrtilles', 8.00, NULL, 250, 'A', 'Fruits', 'BlueBerryLand', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (87, 'Prunes', 3.00, NULL, 1000, 'A', 'Fruits', 'PlumPerfect', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (88, 'Pomelos', 2.80, NULL, 1200, 'A', 'Fruits', 'CitrusJoy', 'FALSE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (89, 'Citrons Jaunes', 2.20, NULL, 1000, 'A', 'Fruits', 'BioVerde', 'TRUE')
-    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque, Bio) VALUES (90, 'Figues', 5.50, NULL, 500, 'A', 'Fruits', 'MediterraneanDelight', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('51', 'Tagliatelles', NULL, 1.80, 500, 'A',   'Barilla', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('52', 'Penne Rigate', NULL, 1.40, 400, 'B',   'De Cecco', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('53', 'Coquillettes', NULL, 1.20, 300, 'C',   'Panzani', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('54', 'Fusilli', NULL, 1.50, 500, 'B',   'Rummo', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('55', 'Torsades', NULL, 1.60, 400, 'A',   'Barilla', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('56', 'Lasagnes', NULL, 2.00, 300, 'C',   'Panzani', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('57', 'Ravioles', NULL, 2.50, 250, 'B',   'Giovanni Rana', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('58', 'Coudes', NULL, 1.30, 500, 'A',   'Lustucru', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('59', 'Macaroni', NULL, 1.70, 450, 'B',   'Barilla', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('60', 'Farfalle', NULL, 1.60, 500, 'A',   'De Cecco', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('61', 'Spaghetti Intégrales', NULL, 2.00, 400, 'A',   'Rummo', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('62', 'Orecchiette', NULL, 1.90, 350, 'B',   'Panzani', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('63', 'Linguine', NULL, 1.80, 450, 'B',   'Barilla', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('64', 'Vermicelles', NULL, 1.40, 300, 'C',   'Lustucru', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('65', 'Rigatoni', NULL, 1.50, 500, 'A',   'De Cecco', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('66', 'Cannelloni', NULL, 2.20, 400, 'B',   'Rummo', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('67', 'Capellini', NULL, 1.80, 350, 'A',   'Barilla', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('68', 'Fusilli Intégrales', NULL, 2.10, 400, 'A',   'Giovanni Rana', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('69', 'Spaghettini', NULL, 1.70, 450, 'B',   'De Cecco', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('70', 'Pâtes Aux Légumes', NULL, 2.50, 300, 'A',   'Panzani', 'TRUE')
+    --jeu de données pour les fruits
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('71', 'Pommes Golden', 2.50, NULL, 1000, 'A',   'BioVerde', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('72', 'Bananes', 1.80, NULL, 1200, 'A',   'TropiFruit', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('73', 'Oranges', 2.20, NULL, 1500, 'A',   'CitrusJoy', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('74', 'Poires Conférence', 2.70, NULL, 1000, 'A',   'FruitéBio', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('75', 'Kiwis', 3.20, NULL, 500, 'A',   'GreenZest', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('76', 'Raisins Rouges', 4.00, NULL, 1000, 'A',   'SunnyVine', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('77', 'Fraises Gariguette', 5.00, NULL, 250, 'A',   'BerryFresh', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('78', 'Pastèque', 1.50, NULL, 5000, 'A',   'Tropical', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('79', 'Melon Charentais', 3.00, NULL, 1500, 'A',   'SummerSweet', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('80', 'Abricots', 4.20, NULL, 1000, 'A',   'FruitLover', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('81', 'Cerises', 6.50, NULL, 500, 'A',   'CherryDelight', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('82', 'Pêches Jaunes', 3.80, NULL, 1000, 'A',   'SunshineFruit', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('83', 'Mangues', 2.50, NULL, 800, 'A',   'TropiFruit', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('84', 'Ananas', 3.50, NULL, 1500, 'A',   'ExoticJoy', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('85', 'Framboises', 7.00, NULL, 250, 'A',   'BerryFresh', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('86', 'Myrtilles', 8.00, NULL, 250, 'A',   'BlueBerryLand', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('87', 'Prunes', 3.00, NULL, 1000, 'A',   'PlumPerfect', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('88', 'Pomelos', 2.80, NULL, 1200, 'A',   'CitrusJoy', 'FALSE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('89', 'Citrons Jaunes', 2.20, NULL, 1000, 'A',   'BioVerde', 'TRUE')
+    INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore,   Marque, Bio) VALUES ('90', 'Figues', 5.50, NULL, 500, 'A',   'MediterraneanDelight', 'FALSE')
 SELECT * FROM dual;
+
+
+
+-- Table Categorie
+INSERT ALL
+    INTO Categorie (CategorieId, NomCat) VALUES (1, 'Fruits')
+    INTO Categorie (CategorieId, NomCat) VALUES (2, 'Fruits rouges')
+    INTO Categorie (CategorieId, NomCat) VALUES (3, 'Fruits divers')
+    INTO Categorie (CategorieId, NomCat) VALUES (4, 'Legumes')
+    INTO Categorie (CategorieId, NomCat) VALUES (5, 'Legumes frais')
+    INTO Categorie (CategorieId, NomCat) VALUES (6, 'Poisson')
+    INTO Categorie (CategorieId, NomCat) VALUES (7, 'Poisson fume')
+    INTO Categorie (CategorieId, NomCat) VALUES (8, 'Poisson frais')
+    INTO Categorie (CategorieId, NomCat) VALUES (9, 'Poisson en conserve')
+    INTO Categorie (CategorieId, NomCat) VALUES (10, 'Viande')
+    INTO Categorie (CategorieId, NomCat) VALUES (11, 'Viande rouge')
+    INTO Categorie (CategorieId, NomCat) VALUES (12, 'Viande blanche')
+    INTO Categorie (CategorieId, NomCat) VALUES (13, 'Charcuterie')
+    INTO Categorie (CategorieId, NomCat) VALUES (14, 'Produits laitiers')
+    INTO Categorie (CategorieId, NomCat) VALUES (15, 'Fromages')
+    INTO Categorie (CategorieId, NomCat) VALUES (16, 'Yaourts')
+    INTO Categorie (CategorieId, NomCat) VALUES (17, 'Beurres et crèmes')
+    INTO Categorie (CategorieId, NomCat) VALUES (18, 'Boissons')
+    INTO Categorie (CategorieId, NomCat) VALUES (19, 'Boissons gazeuses')
+    INTO Categorie (CategorieId, NomCat) VALUES (20, 'Jus de fruits')
+    INTO Categorie (CategorieId, NomCat) VALUES (21, 'Eaux minerales')
+    INTO Categorie (CategorieId, NomCat) VALUES (22, 'Pâtisseries et boulangerie')
+    INTO Categorie (CategorieId, NomCat) VALUES (23, 'Pains')
+    INTO Categorie (CategorieId, NomCat) VALUES (24, 'Produits secs et epicerie')
+    INTO Categorie (CategorieId, NomCat) VALUES (25, 'Riz et cereales')
+    INTO Categorie (CategorieId, NomCat) VALUES (26, 'Pates')
+    INTO Categorie (CategorieId, NomCat) VALUES (27, 'Conserves')
+    INTO Categorie (CategorieId, NomCat) VALUES (28, 'epices')
+    INTO Categorie (CategorieId, NomCat) VALUES (29, 'Snacks et aperitifs')
+    INTO Categorie (CategorieId, NomCat) VALUES (30, 'Chips')
+    INTO Categorie (CategorieId, NomCat) VALUES (31, 'Biscuits sales')
+    INTO Categorie (CategorieId, NomCat) VALUES (32, 'Surgeles')
+    INTO Categorie (CategorieId, NomCat) VALUES (33, 'Glaces')
+    INTO Categorie (CategorieId, NomCat) VALUES (34, 'Plats cuisines surgeles')
+    INTO Categorie (CategorieId, NomCat) VALUES (35, 'Legumes surgeles')
+    INTO Categorie (CategorieId, NomCat) VALUES (36, 'Sauces et condiments')
+    INTO Categorie (CategorieId, NomCat) VALUES (37, 'Sauces')
+    INTO Categorie (CategorieId, NomCat) VALUES (38, 'Huiles et vinaigres')
+    INTO Categorie (CategorieId, NomCat) VALUES (39, 'Produits sucres')
+    INTO Categorie (CategorieId, NomCat) VALUES (40, 'Chocolats')
+    INTO Categorie (CategorieId, NomCat) VALUES (41, 'Confitures et pâtes à tartiner')
+    INTO Categorie (CategorieId, NomCat) VALUES (42, 'Produits non comestibles divers')
+    INTO Categorie (CategorieId, NomCat) VALUES (43, 'Enfant')
+    INTO Categorie (CategorieId, NomCat) VALUES (44, 'Electronique')
+    INTO Categorie (CategorieId, NomCat) VALUES (45, 'Entretien et menage')
+SELECT * FROM DUAL;
+
+
+-- Table Etre
+INSERT ALL
+    -- Fruits et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (1, 2)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (1, 3)
+
+    -- Légumes et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (4, 5)
+
+    -- Poisson et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (6, 7)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (6, 8)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (6, 9)
+
+    -- Viande et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (10, 11)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (10, 12)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (10, 13)
+
+    -- Produits laitiers et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (14, 15)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (14, 16)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (14, 17)
+
+    -- Boissons et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (18, 19)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (18, 20)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (18, 21)
+
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (22, 23)
+
+    -- Produits secs et épicerie et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (24, 25)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (24, 26)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (24, 27)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (24, 28)
+
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (29, 30)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (29, 31)
+
+    -- Surgelés et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (32, 33)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (32, 34)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (32, 35)
+
+    -- Sauces et condiments et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (36, 37)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (36, 38)
+
+    -- Produits sucrés et ses sous-catégories
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (39, 40)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (39, 41)
+
+    -- Non comestibles
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (42, 43)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (42, 44)
+    INTO Etre (CategorieId_Principale, CategorieId_SousCategorie) VALUES (42, 45)
+SELECT * FROM DUAL;
+
+
+
+-- Table Associer
+INSERT ALL
+    INTO Associer (ProduitId, CategorieId) VALUES (1, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (51, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (52, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (53, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (54, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (55, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (56, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (57, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (58, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (59, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (60, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (61, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (62, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (63, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (64, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (65, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (66, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (67, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (68, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (69, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (70, 26)
+    INTO Associer (ProduitId, CategorieId) VALUES (77, 2)
+    INTO Associer (ProduitId, CategorieId) VALUES (85, 2)
+    INTO Associer (ProduitId, CategorieId) VALUES (86, 2)
+    INTO Associer (ProduitId, CategorieId) VALUES (6, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (7, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (71, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (72, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (73, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (74, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (75, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (76, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (78, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (79, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (80, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (81, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (82, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (83, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (84, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (87, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (88, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (89, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (90, 3)
+    INTO Associer (ProduitId, CategorieId) VALUES (5, 8)
+    INTO Associer (ProduitId, CategorieId) VALUES (44, 11)
+    INTO Associer (ProduitId, CategorieId) VALUES (9, 16)
+    INTO Associer (ProduitId, CategorieId) VALUES (31, 16)
+    INTO Associer (ProduitId, CategorieId) VALUES (14, 17)
+    INTO Associer (ProduitId, CategorieId) VALUES (23, 17)
+    INTO Associer (ProduitId, CategorieId) VALUES (15, 15)
+    INTO Associer (ProduitId, CategorieId) VALUES (17, 30)
+    INTO Associer (ProduitId, CategorieId) VALUES (16, 34)
+    INTO Associer (ProduitId, CategorieId) VALUES (49, 27)
+    INTO Associer (ProduitId, CategorieId) VALUES (39, 39)
+    INTO Associer (ProduitId, CategorieId) VALUES (42, 39)
+    INTO Associer (ProduitId, CategorieId) VALUES (43, 41)
+    INTO Associer (ProduitId, CategorieId) VALUES (25, 41)
+    INTO Associer (ProduitId, CategorieId) VALUES (26, 41)
+    INTO Associer (ProduitId, CategorieId) VALUES (10, 21)
+    INTO Associer (ProduitId, CategorieId) VALUES (32, 21)
+    INTO Associer (ProduitId, CategorieId) VALUES (33, 20)
+    INTO Associer (ProduitId, CategorieId) VALUES (2, 44)
+    INTO Associer (ProduitId, CategorieId) VALUES (3, 43)
+    INTO Associer (ProduitId, CategorieId) VALUES (50, 45)
+    INTO Associer (ProduitId, CategorieId) VALUES (8, 45)
+SELECT 1 FROM DUAL;
 
 
 
