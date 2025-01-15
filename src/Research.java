@@ -8,12 +8,23 @@ public class Research {
     public static List<List<String>> searchByKeyword(JDBC database, String keyword) {
         List<List<String>> queryResult = database.executeQuery(
                 """
-                        SELECT Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, NomCat, Marque, SUM(QteCom) AS "Quantité vendu"
+                        SELECT
+                            Produit.ProduitId,
+                            NomProd,
+                            PrixAuKg,
+                            PrixUnitaire,
+                            Poids,
+                            Nutriscore,
+                            cs.NomCat AS "Sou-Categorie",
+                            cp.NomCat AS "Categorie Principale",
+                            Marque,
+                            SUM(QteCom) AS "Quantité vendu"
                         FROM Produit
                         LEFT JOIN Composer ON Produit.ProduitId = Composer.ProduitId
-                        JOIN Associer ON Produit.ProduitId = Associer.ProduitId
-                        JOIN Categorie ON Associer.CategorieId = Categorie.CategorieId
-                        GROUP BY Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, NomCat, Marque
+                        JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId
+                        JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie
+                        JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId
+                        GROUP BY Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, cs.NomCat, cp.NomCat, Marque
                         """);
 
         List<List<String>> result = queryResult
@@ -21,7 +32,8 @@ public class Research {
                 .filter(e -> {
                     return e.get(1).toLowerCase().contains(keyword.toLowerCase())
                             || e.get(6).toLowerCase().contains(keyword.toLowerCase())
-                            || e.get(7).toLowerCase().contains(keyword.toLowerCase());
+                            || e.get(7).toLowerCase().contains(keyword.toLowerCase())
+                            || e.get(8).toLowerCase().contains(keyword.toLowerCase());
                 })
                 .collect(Collectors.toList());
 
@@ -32,17 +44,31 @@ public class Research {
     public static List<List<String>> listCategory(JDBC database, String keyword) {
         List<List<String>> queryResult = database.executeQuery(
                 """
-                        SELECT Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, NomCat, Marque, SUM(QteCom) AS "Quantité vendu"
+                        SELECT
+                            Produit.ProduitId,
+                            NomProd,
+                            PrixAuKg,
+                            PrixUnitaire,
+                            Poids,
+                            Nutriscore,
+                            cs.NomCat AS "Sou-Categorie",
+                            cp.NomCat AS "Categorie Principale",
+                            Marque,
+                            SUM(QteCom) AS "Quantité vendu"
                         FROM Produit
                         LEFT JOIN Composer ON Produit.ProduitId = Composer.ProduitId
-                        JOIN Associer ON Produit.ProduitId = Associer.ProduitId
-                        JOIN Categorie ON Associer.CategorieId = Categorie.CategorieId
-                        GROUP BY Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, NomCat, Marque
-                        """);
+                        JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId
+                        JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie
+                        JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId
+                        GROUP BY Produit.ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, cs.NomCat, cp.NomCat, Marque
+                                """);
 
         List<List<String>> result = queryResult
                 .stream()
-                .filter(e -> e.get(6).toLowerCase().contains(keyword.toLowerCase()))
+                .filter(e -> {
+                    return e.get(6).toLowerCase().contains(keyword.toLowerCase())
+                            || e.get(7).toLowerCase().contains(keyword.toLowerCase());
+                })
                 .collect(Collectors.toList());
 
         return result;
@@ -51,7 +77,7 @@ public class Research {
     // US0.4 Je veux trier une liste de produits.
     public static List<List<String>> orderList(List<List<String>> list, String condition, Boolean croissant) {
         List<String> conditions = Arrays.asList("NomProd", "PrixAuKg", "PrixUnitaire",
-                "Poids", "Nutriscore", "NomCat", "Marque");
+                "Poids", "Nutriscore", "Sou-Categorie", "Categorie Principale", "Marque");
         int indexCondition;
 
         if (list != null) {
