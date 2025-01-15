@@ -2,10 +2,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -47,9 +47,9 @@ public class JDBC {
     }
 
     public void execute(String command) {
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            Statement statement = connection.createStatement();
-            statement.execute(command);
+        try {
+            PreparedStatement statement = connection.prepareStatement(command);
+            statement.execute();
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
             System.err.println(command);
@@ -58,9 +58,9 @@ public class JDBC {
 
     public List<List<String>> executeQuery(String command) {
         List<List<String>> result = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(command);
+        try {
+            PreparedStatement statement = connection.prepareStatement(command);
+            ResultSet resultSet = statement.executeQuery();
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
 
@@ -83,9 +83,9 @@ public class JDBC {
 
     public List<List<String>> executeQueryMetaData(String command) {
         List<List<String>> result = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(command);
+        try {
+            PreparedStatement statement = connection.prepareStatement(command);
+            ResultSet resultSet = statement.executeQuery();
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
 
@@ -108,14 +108,34 @@ public class JDBC {
     }
 
     public void executeUpdate(String command) {
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            Statement statement = connection.createStatement();
-            int line = statement.executeUpdate(command);
+        try {
+            PreparedStatement statement = connection.prepareStatement(command);
+            int line = statement.executeUpdate();
             System.out.println(String.format("%s lines updated", line));
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
             System.err.println(command);
         }
+    }
+
+    public String executeUpdateAutoGenKey(String command, String tableName) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(command, 1);
+            int line = statement.executeUpdate();
+            System.out.println(String.format("%s lines updated", line));
+            ResultSet resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+            String generatedKey = resultSet.getString(1);
+            return executeQuery(String.format("""
+                    SELECT *
+                    FROM %s
+                    WHERE ROWID = '%s'
+                    """, tableName, generatedKey)).get(0).get(0);
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s\n", e.getSQLState(), e.getMessage());
+            System.err.println(command);
+        }
+        return null;
     }
 
     public void executeScript(String path) {

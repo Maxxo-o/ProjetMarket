@@ -13,7 +13,8 @@ public class Client {
     private int idMagasin;
     private JDBC database;
 
-    public Client(int idClient, String Nom, String Prenom, int Age, String sexe, String Adresse, Profil profil, int magasinId, JDBC database) {
+    public Client(int idClient, String Nom, String Prenom, int Age, String sexe, String Adresse, Profil profil,
+            int magasinId, JDBC database) {
         this.idClient = idClient;
         this.Nom = Nom;
         this.Prenom = Prenom;
@@ -43,87 +44,88 @@ public class Client {
 
     }
 
-
-
-    public void validatePanier(){
+    public void validatePanier() {
 
         for (Produit p : panier.getProduits().keySet()) {
-            List<List<String>> result = database.executeQuery("SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() +" AND MagId = " + idMagasin);
+            List<List<String>> result = database.executeQuery(
+                    "SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() + " AND MagId = " + idMagasin);
             if (result.isEmpty()) {
                 System.out.println("Produit non disponible dans ce magasin");
                 return;
-            }
-            else if (Integer.parseInt(result.getFirst().get(2)) < panier.getProduits().get(p)) {
+            } else if (Integer.parseInt(result.getFirst().get(2)) < panier.getProduits().get(p)) {
                 System.out.println("Stock insuffisant");
                 return;
-            }
-            else {
-                database.execute("UPDATE Stocker SET QteStock = QteStock - " + panier.getProduits().get(p) + " WHERE produitId = " + p.getIdProduit() + " AND MagId = " + idMagasin);
+            } else {
+                database.execute("UPDATE Stocker SET QteStock = QteStock - " + panier.getProduits().get(p)
+                        + " WHERE produitId = " + p.getIdProduit() + " AND MagId = " + idMagasin);
             }
         }
 
-
+        String idGen = "";
         try {
-            database.execute("INSERT INTO Commande ( DateCommande, MagId, ClientId, EtatCom) " +
-                    "VALUES (SYSDATE,"+ idMagasin + ", " + idClient + " , 'En preparation')");
-        }
-        catch (Exception e){
+            idGen = database.executeUpdateAutoGenKey(String.format("""
+                    INSERT INTO Commande(HeureDebut, HeureFin, MagId, ClientId, EtatCom)
+                    VALUES (%s, SYSDATE, %s, %s, 'En preparation')
+                    """,
+                    panier.getHeureDebut(),
+                    idMagasin,
+                    idClient), "Commande");
+        } catch (Exception e) {
             System.out.println("Erreur lors de la validation du panier");
         }
 
-
         for (Produit p : panier.getProduits().keySet()) {
-            database.execute("INSERT INTO Composer (produitId, CommandeId, QteCom) " +
-                        "VALUES (" + p.getIdProduit() + ", 99," + panier.getProduits().get(p) + ")");
+            database.execute(String.format("""
+                        INSERT INTO Composer (produitId, CommandeId, QteCom)
+                        VALUES (%s, %s, %s)
+                    """,
+                    p.getIdProduit(),
+                    idGen,
+                    panier.getProduits().get(p)));
         }
     }
 
-
-    public void addProduct(Produit p, int quantite){
+    public void addProduct(Produit p, int quantite) {
         Scanner sc = new Scanner(System.in);
-        int hasStock =  panier.addProduct(p, quantite);
-        if (hasStock > 0){
-            System.out.print("Le produit est en stock mais seulement en "+hasStock +" exemplaires.");
+        int hasStock = panier.addProduct(p, quantite);
+        if (hasStock > 0) {
+            System.out.print("Le produit est en stock mais seulement en " + hasStock + " exemplaires.");
             System.out.println("Voulez-vous les ajouter à votre panier ? (O/N)");
             String nom = sc.nextLine();
-            if (nom.equals("O")){
+            if (nom.equals("O")) {
                 panier.addProduct(p, hasStock);
             }
-        }
-        else if (hasStock == -1){
+        } else if (hasStock == -1) {
             System.out.println("Le produit a été ajouté à votre panier");
-        }
-        else {
+        } else {
             System.out.println("Le produit n'est pas disponible dans ce magasin");
             List<Produit> recommandations = Remplacement.Recommander(profil, p, idMagasin, database);
             System.out.println("Voici quelques recommandations : ");
-            for (Produit recommandation : recommandations){
-                System.out.println("- Proposition "+ (recommandations.indexOf(recommandation)+1)+": " +recommandation.getLibelle());
+            for (Produit recommandation : recommandations) {
+                System.out.println("- Proposition " + (recommandations.indexOf(recommandation) + 1) + ": "
+                        + recommandation.getLibelle());
             }
             System.out.println("Voulez-vous ajouter un de ces produits à votre panier ? (O/N)");
             String nom = sc.nextLine();
-            if (nom.equals("O")){
+            if (nom.equals("O")) {
                 System.out.println("Entrez le numero du produit que vous voulez ajouter : ");
                 String nomProduit = sc.nextLine();
-                Produit produit = recommandations.get(Integer.parseInt(nomProduit)-1);
+                Produit produit = recommandations.get(Integer.parseInt(nomProduit) - 1);
 
                 this.addProduct(produit, quantite);
                 if (!profil.getArticlesPref().contains(produit)) {
                     this.profil.getArticlesPref().add(produit);
-                    database.execute("INSERT INTO Preferer (ProduitId,ClientId) VALUES (" + produit.getIdProduit() + ", " + idClient + ")");
+                    database.execute("INSERT INTO Preferer (ProduitId,ClientId) VALUES (" + produit.getIdProduit()
+                            + ", " + idClient + ")");
                 }
             }
         }
 
-
     }
 
-    public void removeProduct(Produit p, int quantite){
+    public void removeProduct(Produit p, int quantite) {
         panier.removeProduct(p, quantite);
     }
-
-
-
 
     public int getIdClient() {
         return idClient;
@@ -166,7 +168,7 @@ public class Client {
     }
 
     public Panier getPanier() {
-        if (panier == null){
+        if (panier == null) {
             panier = new Panier(idMagasin, database);
         }
         return panier;
@@ -177,7 +179,7 @@ public class Client {
     }
 
     public Profil getProfil() {
-        if (profil == null){
+        if (profil == null) {
         }
         return profil;
     }

@@ -8,14 +8,15 @@ public class Panier {
     private double prixTotal;
     private final int idMagasin;
     private JDBC database;
-    private Timestamp start;
+    private Timestamp HeureDebut;
+
 
     public Panier(int idMagasin, JDBC database) {
         this.produits = new HashMap<>();
         this.prixTotal = 0;
         this.idMagasin = idMagasin;
         this.database = database;
-        this.start = Timestamp.valueOf(LocalDateTime.now());
+        this.HeureDebut = Timestamp.valueOf(LocalDateTime.now());
     }
 
     public Panier(Panier p) {
@@ -24,7 +25,7 @@ public class Panier {
         this.prixTotal = p.prixTotal;
         this.idMagasin = p.idMagasin;
         this.database = p.database;
-        this.start = p.start;
+        this.HeureDebut = p.HeureDebut;
     }
 
 
@@ -115,5 +116,9 @@ public class Panier {
 
     public int getIdMagasin() {
         return idMagasin;
+    }
+
+    public Timestamp getHeureDebut() {
+        return this.HeureDebut;
     }
 }
