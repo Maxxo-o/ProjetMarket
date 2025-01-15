@@ -139,12 +139,12 @@ public class ClientPreferences {
                         "WHERE cmd.ClientId = " + clientId + " " +
                         "AND cmd.CommandeId = c.CommandeId " +
                         "AND c.ProduitId = p.ProduitId " +
-                        "AND cmd.DateCommande >= ADD_MONTHS(SYSDATE, -3) " +
+                        "AND cmd.HeureDebut >= ADD_MONTHS(SYSDATE, -5) " +
+                        "AND cmd.EtatCom = 'Finalisee' " +
                         "GROUP BY p.ProduitId " +
                         "ORDER BY SUM(c.QteCom) DESC " +
-                        "FETCH FIRST 3 ROWS ONLY";
+                        "FETCH FIRST 5 ROWS ONLY";
 
-        // Exécution de la requête pour sélectionner les produits
         List<List<String>> topProducts = database.executeQuery(selectQuery);
 
         // Vérification si des produits ont été trouvés
@@ -165,12 +165,57 @@ public class ClientPreferences {
             String insertQuery =
                     "INSERT INTO Preferer (ProduitId, ClientId) " +
                             "VALUES (" + produitId + ", " + clientId + ")";
-            // Exécution de l'insertion
+
             database.executeUpdate(insertQuery);
             System.out.println("Ajouté : ProduitId = " + produitId + " pour ClientId = " + clientId);
         }
         System.out.println("Mise à jour des préférences terminée.");
+
     }
 
+    public static void updateAppartenirType(int clientId, JDBC database) {
+        // Requête pour obtenir les profils associés aux top 5 produits les plus commandés par le client
+        String selectQuery =
+                "SELECT DISTINCT co.ProfilId " +
+                        "FROM (SELECT cmp.ProduitId " +
+                        "      FROM Commande cmd, Composer cmp " +
+                        "      WHERE cmd.ClientId = " + clientId + " " +
+                        "      AND cmd.CommandeId = cmp.CommandeId " +
+                        "      AND cmd.HeureDebut >= ADD_MONTHS(SYSDATE, -3) " + // Derniers 3 mois
+                        "      AND cmd.EtatCom = 'Finalisee' " +
+                        "      GROUP BY cmp.ProduitId " +
+                        "      HAVING SUM(cmp.QteCom) >= 3 " + // Seuil de 3 produits minimum
+                        "      ORDER BY SUM(cmp.QteCom) DESC " +
+                        "      FETCH FIRST 5 ROWS ONLY) topProducts, " + // top 5
+                        "      Correspondre co " +
+                        "WHERE topProducts.ProduitId = co.ProduitId";
 
+        // Exécution de la requête pour sélectionner les profils
+        List<List<String>> profileRows = database.executeQuery(selectQuery);
+
+        // Vérification si des profils ont été trouvés
+        if (profileRows == null || profileRows.isEmpty()) {
+            System.out.println("Aucun profil trouvé pour le client " + clientId);
+            return;
+        }
+
+        // Suppression des anciennes associations de profils pour ce client
+        String deleteQuery =
+                "DELETE FROM Appartenir_Type WHERE ClientId = " + clientId;
+        database.executeUpdate(deleteQuery);
+        System.out.println("Anciennes associations de profils supprimées pour ClientId = " + clientId);
+
+        // Insertion des nouvelles associations de profils
+        for (List<String> profileRow : profileRows) {
+            String profilId = profileRow.get(0); // ProfilId
+            String insertQuery =
+                    "INSERT INTO Appartenir_Type (ClientId, ProfilId) " +
+                            "VALUES (" + clientId + ", " + profilId + ")";
+
+            database.executeUpdate(insertQuery);
+            System.out.println("Ajouté : ProfilId = " + profilId + " pour ClientId = " + clientId);
+        }
+
+        System.out.println("Mise à jour des associations de profils terminée.");
+    }
 }
