@@ -139,12 +139,12 @@ public class ClientPreferences {
                         "WHERE cmd.ClientId = " + clientId + " " +
                         "AND cmd.CommandeId = c.CommandeId " +
                         "AND c.ProduitId = p.ProduitId " +
-                        "AND cmd.DateCommande >= ADD_MONTHS(SYSDATE, -3) " +
+                        "AND cmd.HeureDebut >= ADD_MONTHS(SYSDATE, -5) " +
+                        "AND cmd.EtatCom = 'Finalisee' " +
                         "GROUP BY p.ProduitId " +
                         "ORDER BY SUM(c.QteCom) DESC " +
-                        "FETCH FIRST 3 ROWS ONLY";
+                        "FETCH FIRST 5 ROWS ONLY";
 
-        // Exécution de la requête pour sélectionner les produits
         List<List<String>> topProducts = database.executeQuery(selectQuery);
 
         // Vérification si des produits ont été trouvés
@@ -165,12 +165,13 @@ public class ClientPreferences {
             String insertQuery =
                     "INSERT INTO Preferer (ProduitId, ClientId) " +
                             "VALUES (" + produitId + ", " + clientId + ")";
-            // Exécution de l'insertion
+
             database.executeUpdate(insertQuery);
             System.out.println("Ajouté : ProduitId = " + produitId + " pour ClientId = " + clientId);
         }
         System.out.println("Mise à jour des préférences terminée.");
-    }
 
+
+}
 
 }
