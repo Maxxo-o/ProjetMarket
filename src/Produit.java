@@ -32,13 +32,13 @@ public class Produit {
 
     // Constructeur par l'id du produit
     public Produit(int idProduit, JDBC database) {
-        List<List<String>> result = database.executeQuery("SELECT * FROM Produit WHERE produitId = " + idProduit);
+        List<List<String>> result = database.executeQuery("SELECT p.*, c.NomCat FROM Produit p, Categorie c WHERE produitId = "+ idProduit+" AND p.CategorieId = c.CategorieId");
         if (!result.isEmpty()) ContructFromBd(result);
         else System.out.println("Produit non trouvé");
     }
 
     public Produit(String libelle, JDBC database) {
-        List<List<String>> result = database.executeQuery("SELECT * FROM Produit WHERE NomProd = '" + libelle + "'");
+        List<List<String>> result = database.executeQuery("SELECT p.*, c.NomCat FROM Produit p, Categorie c WHERE NomProd = "+ libelle+" AND p.CategorieId = c.CategorieId");
         if (!result.isEmpty()) ContructFromBd(result);
         else System.out.println("Produit non trouvé");
     }
@@ -54,9 +54,9 @@ public class Produit {
         if (result.get(0).get(4) != null) this.poids = Double.parseDouble(result.get(0).get(4));
         else this.poids = 0;
         this.nutriscore = result.get(0).get(5);
-        this.categorie = result.get(0).get(6);
-        this.marque = result.get(0).get(7);
-        this.isBio = Boolean.parseBoolean(result.get(0).get(8));
+        this.categorie = result.get(0).get(8);
+        this.marque = result.get(0).get(6);
+        this.isBio = Boolean.parseBoolean(result.get(0).get(7));
     }
 
     // Constructeur par copie
