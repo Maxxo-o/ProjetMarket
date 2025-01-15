@@ -5,7 +5,6 @@ public class ClientPreferences {
 
     // Méthode pour récupérer tous les résultats pour un client donné
     public static List<List<String>> getClientPreferences(int clientId, JDBC database) {
-
         // Initialisation de la liste pour stocker tous les résultats sous forme de List<List<String>>
         List<List<String>> allResults = new ArrayList<>();
 
@@ -40,12 +39,14 @@ public class ClientPreferences {
         }
 
         // 2. Catégorie de produit la plus commandée
-        String categorieQuery = "SELECT p.Categorie " +
+        String categorieQuery = "SELECT cat.NomCat " +
                 "FROM Produit p " +
                 "JOIN Composer c ON p.ProduitId = c.ProduitId " +
                 "JOIN Commande cmd ON c.CommandeId = cmd.CommandeId " +
+                "JOIN Associer assoc ON p.ProduitId = assoc.ProduitId " +
+                "JOIN Categorie cat ON assoc.CategorieId = cat.CategorieId " +
                 "WHERE cmd.ClientId = " + clientId + " " +
-                "GROUP BY p.Categorie " +
+                "GROUP BY cat.NomCat " +
                 "HAVING COUNT(*) = ( " +
                 "    SELECT MAX(frequency) " +
                 "    FROM ( " +
@@ -53,8 +54,9 @@ public class ClientPreferences {
                 "        FROM Produit p " +
                 "        JOIN Composer c ON p.ProduitId = c.ProduitId " +
                 "        JOIN Commande cmd ON c.CommandeId = cmd.CommandeId " +
+                "        JOIN Associer assoc ON p.ProduitId = assoc.ProduitId " +
                 "        WHERE cmd.ClientId = " + clientId + " " +
-                "        GROUP BY p.Categorie " +
+                "        GROUP BY assoc.CategorieId " +
                 "    ) " +
                 ")";
         List<List<String>> categorieResult = database.executeQuery(categorieQuery);
@@ -116,20 +118,38 @@ public class ClientPreferences {
 
         // Affichage des résultats
         System.out.print("Nutriscore le plus commandé : ");
-        System.out.println(String.join(", ", nutriscoreResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
+        if (nutriscoreResult != null && !nutriscoreResult.isEmpty()) {
+            System.out.println(String.join(", ", nutriscoreResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
+        } else {
+            System.out.println("Aucun Nutriscore trouvé.");
+        }
 
         System.out.print("Catégorie la plus commandée : ");
-        System.out.println(String.join(", ", categorieResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
+        if (categorieResult != null && !categorieResult.isEmpty()) {
+            System.out.println(String.join(", ", categorieResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
+        } else {
+            System.out.println("Aucune catégorie trouvée.");
+        }
 
         System.out.print("Marque la plus commandée : ");
-        System.out.println(String.join(", ", marqueResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
+        if (marqueResult != null && !marqueResult.isEmpty()) {
+            System.out.println(String.join(", ", marqueResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
+        } else {
+            System.out.println("Aucune marque trouvée.");
+        }
 
         System.out.print("Préférence Bio : ");
-        System.out.println(String.join(", ", preferenceBioResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
+        if (preferenceBioResult != null && !preferenceBioResult.isEmpty()) {
+            System.out.println(String.join(", ", preferenceBioResult.stream().map(r -> r.get(0)).toArray(String[]::new)));
+        } else {
+            System.out.println("Aucune préférence bio trouvée.");
+        }
 
         // Retourne tous les résultats sous forme de List<List<String>>
         return allResults;
     }
+
+
 
     public static void updatePreferer(int clientId, JDBC database) {
         // Requête pour obtenir les 3 produits les plus commandés pour ce client
