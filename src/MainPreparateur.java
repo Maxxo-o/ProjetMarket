@@ -11,7 +11,8 @@ public class MainPreparateur {
             System.out.println("2. Marquer une commande comme préparée");
             System.out.println("3. Afficher les commandes en attente de livraison");
             System.out.println("4. Marquer une commande comme livrée");
-            System.out.println("5. Quitter");
+            System.out.println("5. Changer d'utilisateur");
+            System.out.println("6. Quitter");
             choix = sc.nextInt();
 
             switch (choix) {
@@ -36,6 +37,9 @@ public class MainPreparateur {
                     Preparer.marquerCommande(database, idCommande, "Finalisee");
                     break;
                 case 5:
+                    MainClient.main(args);
+                    break;
+                case 6:
                     System.exit(0);
                     break;
                 default:

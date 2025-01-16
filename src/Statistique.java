@@ -8,7 +8,7 @@ public class Statistique {
     public static int NbProposeRempla = 0;
     public static int NbPChoisiRempla = 0;
 
-    public List<List<String>> produit(JDBC database, String condition) {
+    public static List<List<String>> produit(JDBC database, String condition) {
         Map<String, String> conditions = new HashMap<>(Map.of(
                 "Le plus commendé", "Nombre de commande",
                 "Le plus vendu", "Quantité vendu",
@@ -43,7 +43,7 @@ public class Statistique {
         }
     }
 
-    public List<List<String>> categorie(JDBC database, String condition) {
+    public static List<List<String>> categorie(JDBC database, String condition) {
         Map<String, String> conditions = new HashMap<>(Map.of(
                 "Le plus commendé", "Nombre de commande",
                 "Le plus vendu", "Quantité vendu",
@@ -81,7 +81,7 @@ public class Statistique {
         }
     }
 
-    public List<List<String>> client(JDBC database, String condition) {
+    public static List<List<String>> client(JDBC database, String condition) {
         Map<String, String> conditions = new HashMap<>(Map.of(
                 "Le plus commendé", "Nombre de commande",
                 "Le plus acheté", "Quantité acheté",
@@ -120,7 +120,7 @@ public class Statistique {
         }
     }
 
-    public void general(JDBC database) {
+    public static void general(JDBC database) {
         String prixMoyenneSurClients = database.executeQuery("""
                 WITH ClientCA(ClientId, CA) AS (
                     SELECT
@@ -252,10 +252,16 @@ public class Statistique {
     }
 
     public static double efficaciteRecom() {
+        if (NbProposeRecom == 0) {
+            return 0;
+        }
         return NbChoisiRecom / NbChoisiRecom;
     }
 
     public static double efficaciteRenpla() {
+        if (NbProposeRempla == 0) {
+            return 0;
+        }
         return NbPChoisiRempla / NbProposeRempla;
     }
 

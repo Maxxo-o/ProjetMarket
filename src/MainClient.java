@@ -1,5 +1,3 @@
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +49,7 @@ public class MainClient {
             System.out.println("c. Consulter son panier");
             System.out.println("p. Consulter son profil");
             System.out.println("o. /!\\ Voir les produit du moment /!\\");
+            System.out.println("u. Changer d'utilisateur");
             System.out.println("q. Quitter l'application");
             System.out.println(separator);
 
@@ -69,8 +68,10 @@ public class MainClient {
                 case 'o':
                     ProdMoment();
                     break;
+                case 'u':
+                    main(args);
                 case 'q':
-                    cas5();
+                    exitApp();
                     break;
                 default:
                     System.out.println("Cas non reconnu");
@@ -192,8 +193,9 @@ public class MainClient {
 
     }
 
-    public static void cas5() {
+    public static void exitApp() {
         System.out.println("Merci d'avoir utilisé notre application");
+        System.exit(0);
     }
 
     public static void afficherProduits(List<List<String>> ListProduit) {
