@@ -847,29 +847,22 @@ SELECT * FROM dual;
 
 -- Table Delivrer
 INSERT ALL
-INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
-VALUES ('1', '1', 3, 'Livraison à domicile', TO_DATE('2025-01-10', 'YYYY-MM-DD'))
-
-INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
-VALUES ('2', '1', 2, 'Récupérer en magasin', TO_DATE('2025-01-11', 'YYYY-MM-DD'))
-
-INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
-VALUES ('3', '1', 4, 'Livraison mixte', TO_DATE('2025-01-12', 'YYYY-MM-DD'))
-
-INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
-VALUES ('4', '1', 1, 'Livraison à domicile', TO_DATE('2025-01-13', 'YYYY-MM-DD'))
-
-INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
-VALUES ('1', '2', 2, 'Récupérer en magasin', TO_DATE('2025-01-14', 'YYYY-MM-DD'))
-
-INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
-VALUES ('2', '2', 5, 'Livraison mixte', TO_DATE('2025-01-15', 'YYYY-MM-DD'))
-
-INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
-VALUES ('3', '2', 2, 'Livraison à domicile', TO_DATE('2025-01-16', 'YYYY-MM-DD'))
-
-INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
-VALUES ('4', '2', 3, 'Récupérer en magasin', TO_DATE('2025-01-17', 'YYYY-MM-DD'))
+	INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
+	VALUES ('1', '1', 3, 'Livraison à domicile', TO_DATE('2025-01-10', 'YYYY-MM-DD'))
+	INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
+	VALUES ('2', '1', 2, 'Livraison à domicile', TO_DATE('2025-01-10', 'YYYY-MM-DD'))
+	INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
+	VALUES ('3', '1', 4, 'Livraison à domicile', TO_DATE('2025-01-10', 'YYYY-MM-DD'))
+	INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
+	VALUES ('4', '1', 1, 'Livraison à domicile', TO_DATE('2025-01-10', 'YYYY-MM-DD'))
+	INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
+	VALUES ('1', '2', 2, 'Récupérer en magasin', TO_DATE('2025-01-13', 'YYYY-MM-DD'))
+	INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
+	VALUES ('2', '2', 5, 'Récupérer en magasin', TO_DATE('2025-01-13', 'YYYY-MM-DD'))
+	INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
+	VALUES ('3', '2', 2, 'Récupérer en magasin', TO_DATE('2025-01-13', 'YYYY-MM-DD'))
+	INTO Delivrer (ProduitId, CommandeId, QuantiteLivraison, ModeLivraison, DateLivraison)
+	VALUES ('4', '2', 3, 'Récupérer en magasin', TO_DATE('2025-01-13', 'YYYY-MM-DD'))
 SELECT * FROM dual;
 
 
