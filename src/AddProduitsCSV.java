@@ -1,16 +1,34 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class AddProduitsCSV {
-    public static void readCSV(JDBC database, String path) {
+    public static void askPath(JDBC database) {
+        Scanner sc = new Scanner(System.in);
+        File file;
+        while (true) {
+            System.out.println("Entrez votre chemin du ficher csv: ");
+            file = new File(sc.nextLine());
+            if (file.exists()) {
+                readCSV(database, file);
+                break;
+            }
+            else
+                System.out.println("Chemin invalid");
+        }
+        sc.close();
+    }
+
+    public static void readCSV(JDBC database, File file) {
         List<Produit> produits = new ArrayList<>();
         String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while ((line = br.readLine()) != null) {
                 List<String> list = Arrays.asList(line.split(";"));
                 produits.add(new Produit(
