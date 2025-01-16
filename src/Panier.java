@@ -34,7 +34,7 @@ public class Panier {
      */
     public int addProduct(Produit p, int quantite) {
         if (this.produits.isEmpty()) {
-            this.HeureDebut = Timestamp.valueOf(LocalDateTime.now());
+            this.HeureDebut = Timestamp.valueOf(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
         }
         if (quantite > 0) {
             List<List<String>> result = database.executeQuery(

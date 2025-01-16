@@ -20,6 +20,11 @@ public class Profil {
         this.ArticlesPref = new ArrayList<>();
         this.database = database;
         List<List<String>> result = database.executeQuery("SELECT p.* FROM TypesDeProfil p, Appartenir_Type t WHERE t.clientId = " + idClient+ " AND p.ProfilId = t.ProfilId" );
+
+        nomProfils = new ArrayList<>();
+        for (List<String> l : result) {
+            nomProfils.add(l.get(1));
+        }
         setArticlesPref();
 
     }

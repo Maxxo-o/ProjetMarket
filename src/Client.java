@@ -67,8 +67,8 @@ public class Client {
         String idGen = "";
         try {
             idGen = database.executeUpdateAutoGenKey(String.format("""
-                    INSERT INTO Commande(HeureDebut, HeureFin, MagId, ClientId, EtatCom)
-                    VALUES (%s, SYSDATE, %s, %s, 'En preparation')
+                        INSERT INTO Commande (HeureDebut, HeureFin, MagId, ClientId, EtatCom)
+                        VALUES (CAST(TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS.FF') AS DATE), SYSDATE, %s, %s, 'En preparation')
                     """,
                     panier.getHeureDebut(),
                     idMagasin,

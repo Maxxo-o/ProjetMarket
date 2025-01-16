@@ -72,7 +72,7 @@ public class Research {
                     case "Poids" -> compare(e1.getPoids(), e2.getPoids(), true, direction);
                     case "Nutriscore" -> compare(e1.getNutriscore(), e2.getNutriscore(), false, direction);
                     case "Marque" -> compare(e1.getMarque(), e2.getMarque(), false, direction);
-                    case "Sou-Categorie" -> compare(e1.getSouCategorie(), e2.getSouCategorie(), false, direction);
+                    case "Sous-Categorie" -> compare(e1.getSouCategorie(), e2.getSouCategorie(), false, direction);
                     case "Categorie Principale" ->
                         compare(e1.getcategoriePincipale(), e2.getcategoriePincipale(), false, direction);
                     default -> 0;

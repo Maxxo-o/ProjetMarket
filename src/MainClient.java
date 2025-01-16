@@ -181,14 +181,15 @@ public class MainClient {
 
         System.out.println("Produits du moment : ");
 
-
-        AffProduitBd(prods);
         List<Produit> listProd = new ArrayList<>();
         for (List<String> row : prods) {
             Produit p = new Produit(row);
             listProd.add(p);
         }
 
+        listProd.addAll(Recommandation.RecommanderPeriode(getPeriodeId(), database));
+
+        AffProduitList(listProd);
         AjouterAuPanier(listProd);
 
     }
@@ -316,6 +317,11 @@ public class MainClient {
     }
 
     public static void AffHabitudesConsommation() {
+        System.out.println("Votre profil de consommation : ");
+        for (String s : c.getProfil().getNomProfils()) {
+            System.out.print("Type de profil : "+s+" ");
+        }
+        System.out.println(".");
         ClientPreferences.getClientPreferences(c.getIdClient(), database);
     }
 
@@ -430,9 +436,22 @@ public class MainClient {
                     produit.getSouCategorie());
         }
         System.out.println(separator);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Trier les resultats ? o : oui, n : non");
+        String s = sc.next();
+        if (s.equals("o")) {
+            System.out.println("Entrez le critère de tri : (NomProd, PrixUnitaire, PrixAuKg, Poids, Nutriscore, Marque, Sous-Categorie,Categorie Principale)");
+            String critere = sc.next();
+            System.out.println("Ordre croissant ? o : oui, n : non");
+            boolean croissant = sc.next().equals("o");
+            listProd = Research.orderList(listProd, critere, croissant);
+            AffProduitList(listProd);
+        }
     }
 
     public static void AffProduitBd(List<List<String>> listProd) {
+
+
         String header = String.format("%2s | %-30s | %-15s | %-15s | %-15s",
                 "n°", "Nom Produit", "Marque", "Prix", "Categorie");
 
