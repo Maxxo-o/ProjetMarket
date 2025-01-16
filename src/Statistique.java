@@ -3,7 +3,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Statistique {
-    public static List<List<String>> produit(JDBC database, String condition) {
+    public static int NbProposeRecom = 0;
+    public static int NbChoisiRecom = 0;
+    public static int NbProposeRempla = 0;
+    public static int NbPChoisiRempla = 0;
+
+    public List<List<String>> produit(JDBC database, String condition) {
         Map<String, String> conditions = new HashMap<>(Map.of(
                 "Le plus commendé", "Nombre de commande",
                 "Le plus vendu", "Quantité vendu",
@@ -38,7 +43,7 @@ public class Statistique {
         }
     }
 
-    public static List<List<String>> categorie(JDBC database, String condition) {
+    public List<List<String>> categorie(JDBC database, String condition) {
         Map<String, String> conditions = new HashMap<>(Map.of(
                 "Le plus commendé", "Nombre de commande",
                 "Le plus vendu", "Quantité vendu",
@@ -76,7 +81,7 @@ public class Statistique {
         }
     }
 
-    public static List<List<String>> client(JDBC database, String condition) {
+    public List<List<String>> client(JDBC database, String condition) {
         Map<String, String> conditions = new HashMap<>(Map.of(
                 "Le plus commendé", "Nombre de commande",
                 "Le plus acheté", "Quantité acheté",
@@ -115,7 +120,7 @@ public class Statistique {
         }
     }
 
-    public static void general(JDBC database) {
+    public void general(JDBC database) {
         String prixMoyenneSurClients = database.executeQuery("""
                 WITH ClientCA(ClientId, CA) AS (
                     SELECT
@@ -209,10 +214,9 @@ public class Statistique {
         List<List<String>> result = database.executeQuery(
                 "SELECT AVG(HeureFin - HeureDebut) * 24 * 60 AS TempsMoyenPanier " +
                         "FROM Commande " +
-                        "WHERE HeureFin IS NOT NULL"
-        );
+                        "WHERE HeureFin IS NOT NULL");
 
-        if ( result.isEmpty() ||result.getFirst().getFirst() == null) {
+        if (result.isEmpty() || result.getFirst().getFirst() == null) {
             System.out.println("Aucune donnée disponible pour calculer le temps moyen de réalisation des paniers.");
         } else {
             double tempsMoyen = Double.parseDouble(result.getFirst().getFirst()); // En minutes
@@ -225,17 +229,17 @@ public class Statistique {
                     heures, minutes, tempsMoyen / 60);
         }
 
-       // System.out.println(result);
-       // return result.getFirst().getFirst();
+        // System.out.println(result);
+        // return result.getFirst().getFirst();
 
     }
+
     public static void getTempsMoyenRealisationCommande(JDBC database) {
         List<List<String>> result = database.executeQuery(
                 "SELECT AVG(HeureFinCommande - HeureFin) * 24 * 60 AS TempsMoyenCommande " +
                         "FROM Commande " +
-                        "WHERE HeureFinCommande IS NOT NULL"
-        );
-        if ( result.isEmpty() ||result.getFirst().getFirst() == null) {
+                        "WHERE HeureFinCommande IS NOT NULL");
+        if (result.isEmpty() || result.getFirst().getFirst() == null) {
             System.out.println("Aucune donnée disponible pour calculer le temps moyen de réalisation des Commandes.");
         } else {
             double tempsMoyen = Double.parseDouble(result.getFirst().getFirst()); // En minutes
@@ -245,6 +249,14 @@ public class Statistique {
             System.out.printf("Temps moyen de réalisation des Commandes : %d heures et %d minutes (%.2f heures)%n",
                     heures, minutes, tempsMoyen / 60);
         }
+    }
+
+    public static double efficaciteRecom() {
+        return NbChoisiRecom / NbChoisiRecom;
+    }
+
+    public static double efficaciteRenpla() {
+        return NbPChoisiRempla / NbProposeRempla;
     }
 
 }
