@@ -204,4 +204,47 @@ public class Statistique {
             System.out.println(String.format("%35s\t%s", e.get(0), e.get(1)));
         });
     }
+
+    public static void getTempsMoyenRealisationPanier(JDBC database) {
+        List<List<String>> result = database.executeQuery(
+                "SELECT AVG(HeureFin - HeureDebut) * 24 * 60 AS TempsMoyenPanier " +
+                        "FROM Commande " +
+                        "WHERE HeureFin IS NOT NULL"
+        );
+
+        if ( result.isEmpty() ||result.getFirst().getFirst() == null) {
+            System.out.println("Aucune donnée disponible pour calculer le temps moyen de réalisation des paniers.");
+        } else {
+            double tempsMoyen = Double.parseDouble(result.getFirst().getFirst()); // En minutes
+
+            // Conversion en heures et minutes
+            int heures = (int) tempsMoyen / 60;
+            int minutes = (int) tempsMoyen % 60;
+
+            System.out.printf("Temps moyen de réalisation des paniers : %d heures et %d minutes (%.2f heures)%n",
+                    heures, minutes, tempsMoyen / 60);
+        }
+
+       // System.out.println(result);
+       // return result.getFirst().getFirst();
+
+    }
+    public static void getTempsMoyenRealisationCommande(JDBC database) {
+        List<List<String>> result = database.executeQuery(
+                "SELECT AVG(HeureFinCommande - HeureFin) * 24 * 60 AS TempsMoyenCommande " +
+                        "FROM Commande " +
+                        "WHERE HeureFinCommande IS NOT NULL"
+        );
+        if ( result.isEmpty() ||result.getFirst().getFirst() == null) {
+            System.out.println("Aucune donnée disponible pour calculer le temps moyen de réalisation des Commandes.");
+        } else {
+            double tempsMoyen = Double.parseDouble(result.getFirst().getFirst()); // En minutes
+            int heures = (int) tempsMoyen / 60;
+            int minutes = (int) tempsMoyen % 60;
+
+            System.out.printf("Temps moyen de réalisation des Commandes : %d heures et %d minutes (%.2f heures)%n",
+                    heures, minutes, tempsMoyen / 60);
+        }
+    }
+
 }
