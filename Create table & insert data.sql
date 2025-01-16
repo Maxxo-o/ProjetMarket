@@ -17,6 +17,7 @@ DROP TABLE Periode CASCADE CONSTRAINTS;
 DROP TABLE Approprier CASCADE CONSTRAINTS;
 DROP TABLE Etre CASCADE CONSTRAINTS;
 DROP TABLE Categorie CASCADE CONSTRAINTS;
+DROP TABLE CategoriePhare CASCADE CONSTRAINTS;
 
 
 -- Table Categorie
@@ -232,6 +233,12 @@ INSERT ALL
     INTO Categorie (CategorieId, NomCat) VALUES (43, 'Enfant')
     INTO Categorie (CategorieId, NomCat) VALUES (44, 'Electronique')
     INTO Categorie (CategorieId, NomCat) VALUES (45, 'Entretien et menage')
+SELECT * FROM DUAL;
+
+INSERT ALL
+    INTO CategoriePhare (CategorieId) VALUES (5)
+    INTO CategoriePhare (CategorieId) VALUES (19)
+    INTO CategoriePhare (CategorieId) VALUES (40)
 SELECT * FROM DUAL;
 
 
