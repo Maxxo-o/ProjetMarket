@@ -14,6 +14,33 @@ public class MainPreparateur {
             System.out.println("5. Quitter");
             choix = sc.nextInt();
 
+            switch (choix) {
+                case 1:
+                    // Afficher les commandes en attente de préparation
+                    Preparer.commanedsAPreparer(database, "En preparation");
+                    break;
+                case 2:
+                    // Marquer une commande comme préparée
+                    System.out.println("Entrez l'id de la commande à marquer comme préparée : ");
+                    int idCommande = sc.nextInt();
+                    Preparer.marquerCommande(database, idCommande, "En attente de livraison");
+                    break;
+                case 3:
+                    // Afficher les commandes en attente de livraison
+                    Preparer.commanedsAPreparer(database, "En attente de livraison");
+                    break;
+                case 4:
+                    // Marquer une commande comme livrée
+                    System.out.println("Entrez l'id de la commande à marquer comme livrée : ");
+                    idCommande = sc.nextInt();
+                    Preparer.marquerCommande(database, idCommande, "Finalisee");
+                    break;
+                case 5:
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Choix invalide");
+            }
 
         }
         database.disconnect();

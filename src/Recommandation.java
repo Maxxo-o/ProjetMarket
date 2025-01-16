@@ -5,11 +5,49 @@ import java.util.List;
 public class Recommandation {
 
     public static List<Produit> Recommander(Produit p, JDBC database){
-        List<List<String>> result = database.executeQuery("SELECT p.* FROM RECOMMANDER r, Produit p WHERE r.ProduitId = p.ProduitID AND r.ProduitId_est_lié = " + p.getIdProduit());
+        List<List<String>> result = database.executeQuery("SELECT DISTINCT\n" +
+                "        Produit.ProduitId,\n" +
+                "        NomProd,\n" +
+                "        PrixAuKg,\n" +
+                "        PrixUnitaire,\n" +
+                "        Poids,\n" +
+                "        Nutriscore,\n" +
+                "        Marque,\n" +
+                "        bio,\n" +
+                "        cs.NomCat AS \"Sou-Categorie\",\n" +
+                "        cp.NomCat AS \"Categorie Principale\"\n" +
+                "    FROM Produit\n" +
+                "    JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId\n" +
+                "    JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie\n" +
+                "    JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId\n" +
+                "    JOIN Recommander r ON Produit.ProduitId = r.ProduitId\n" +
+                "    WHERE r.ProduitId_est_lié = " + p.getIdProduit()
+        );
+        System.out.println(result);
         return getProduitsRecommandes(result, database);
     }
     public static List<Produit> RecommanderPeriode(int periodeId, JDBC database){
-        List<List<String>> result = database.executeQuery(" SELECT * FROM RECOMMANDER_Periode WHERE periodeId = " + periodeId);
+        List<List<String>> result = database.executeQuery("SELECT DISTINCT\n" +
+                "        Produit.ProduitId,\n" +
+                "        NomProd,\n" +
+                "        PrixAuKg,\n" +
+                "        PrixUnitaire,\n" +
+                "        Poids,\n" +
+                "        Nutriscore,\n" +
+                "        Marque,\n" +
+                "        bio,\n" +
+                "        cs.NomCat AS \"Sou-Categorie\",\n" +
+                "        cp.NomCat AS \"Categorie Principale\"\n" +
+                "    FROM Produit\n" +
+                "    JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId\n" +
+                "    JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie\n" +
+                "    JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId\n" +"" +
+                "    JOIN Approprier a ON Produit.ProduitId = a.ProduitId\n" +
+                "    JOIN Periode pe ON Approprier.PeriodeId = pe.PeriodeId\n" +
+                "    WHERE pe.periodeId = " + periodeId
+        );
+
+        System.out.println(result);
         return getProduitsRecommandes(result, database);
     }
 
@@ -17,15 +55,7 @@ public class Recommandation {
     private static List<Produit> getProduitsRecommandes(List<List<String>> result, JDBC database){
         List<Produit> produits = new ArrayList<>();
         for (List<String> row : result){
-            double prixUnitaire = 0;
-            double prixAuKg = 0;
-            double poids = 0;
-
-            if (row.get(2) != null) prixUnitaire = Double.parseDouble(row.get(2));
-            if (row.get(3) != null)  prixAuKg = Double.parseDouble(row.get(3));
-            if (row.get(4) != null) poids = Double.parseDouble(row.get(4));
-
-            produits.add(new Produit(Integer.parseInt(row.get(0)), row.get(1),prixUnitaire, prixAuKg, poids, row.get(8), row.get(6), row.get(5), Boolean.parseBoolean(row.get(7)),database));
+            produits.add(new Produit(row));
         }
 
         return produits;

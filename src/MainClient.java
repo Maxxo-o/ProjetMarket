@@ -26,23 +26,26 @@ public class MainClient {
 
         if (id == 999) {
             // admin
-        };
+            MainAdmin.main(args);
+        } else if (id == 998) {
+            // preparateur
+            MainPreparateur.main(args);
+        }
 
         int idVille = 0;
 
-        while (idVille == 0){
+        while (idVille == 0) {
             idVille = choixVille();
         }
 
         c = new Client(id, idVille, new Profil(id, database), database);
 
 
-
         System.out.println();
 
         char cas = ' ';
 
-        while (cas != 'q'){
+        while (cas != 'q') {
             System.out.println(separator);
             System.out.println("a. Consulter le catalogue de produit");
             System.out.println("c. Consulter son panier");
@@ -53,7 +56,7 @@ public class MainClient {
 
             cas = sc.next().charAt(0);
 
-            switch (cas){
+            switch (cas) {
                 case 'a':
                     AffCatalogue();
                     break;
@@ -76,11 +79,11 @@ public class MainClient {
         database.disconnect();
     }
 
-    public static void AffCatalogue(){
+    public static void AffCatalogue() {
         String s = "";
         Scanner sc = new Scanner(System.in);
 
-        while (!s.equals("q")){
+        while (!s.equals("q")) {
             System.out.println(separator);
             System.out.println("m. Rechercher un produit par mot clé");
             System.out.println("c. Rechercher un produit par catégorie");
@@ -91,22 +94,31 @@ public class MainClient {
             switch (s) {
                 case "m":
                     System.out.println("Entrez le mot clé : ");
-                    List<List<String>> prodKey = Research.searchByKeyword(database, sc.next());
+                    List<Produit> prodKey = Research.searchByKeyword(database, sc.next());
                     if (prodKey.isEmpty()) System.out.println("Aucun produit trouvé");
-                    else afficherProduits(prodKey);
+                    else {
+                        AffProduitList(prodKey);
+                        Produit p = AjouterAuPanier(prodKey);
+                        if (p != null) ajouterRecommandation(p);
+                    }
                     break;
                 case "c":
                     System.out.println("Entrez la catégorie : ");
-                    List<List<String>> prodCat = Research.listCategory(database, sc.next());
+                    List<Produit> prodCat = Research.listCategory(database, sc.next());
                     if (prodCat.isEmpty()) System.out.println("Aucun produit trouvé");
-                    else afficherProduits(prodCat);
+                    else {
+                        AffProduitList(prodCat);
+                        Produit p = AjouterAuPanier(prodCat);
+                        if (p != null) ajouterRecommandation(p);
+                    }
                     break;
                 default:
                     System.out.println("Cas non reconnu");
             }
         }
     }
-    public static void AffPanier(){
+
+    public static void AffPanier() {
         String s = "";
         Scanner sc = new Scanner(System.in);
         while (!s.equals("q")) {
@@ -141,17 +153,45 @@ public class MainClient {
             }
         }
     }
-    public static void ProdMoment(){
 
+    public static void ProdMoment() {
+        List<List<String>> prods = database.executeQuery(
+                """
+                        SELECT DISTINCT
+                    Produit.ProduitId,
+                    NomProd,
+                    PrixAuKg,
+                    PrixUnitaire,
+                    Poids,
+                    Nutriscore,
+                    Marque,
+                    bio,
+                    cs.NomCat AS "Sou-Categorie",
+                    cp.NomCat AS "Categorie Principale"
+                FROM Produit
+                JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId
+                JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie
+                JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId
+                JOIN CategoriePhare On cs.CategorieId = CategoriePhare.CategorieId
+                        """
+        );
 
+        System.out.println("Produits du moment : ");
+        AffProduitBd(prods);
+        List<Produit> listProd = new ArrayList<>();
+        for (List<String> row : prods) {
+            Produit p = new Produit(row);
+            listProd.add(p);
+        }
+        AjouterAuPanier(listProd);
 
-        System.out.println(separator);
     }
-    public static void cas5(){
+
+    public static void cas5() {
         System.out.println("Merci d'avoir utilisé notre application");
     }
 
-    public static void afficherProduits(List<List<String>> ListProduit){
+    public static void afficherProduits(List<List<String>> ListProduit) {
         System.out.println("Liste des produits : ");
 
         AffProduitBd(ListProduit);
@@ -160,10 +200,10 @@ public class MainClient {
         Scanner sc = new Scanner(System.in);
         String s = sc.next();
 
-        while(!s.equals("n")){
+        while (!s.equals("n")) {
             System.out.println("Entrez le numéro du produit à ajouter : ");
-            int num = sc.nextInt()-1;
-            if (num < 0 || num >= ListProduit.size()){
+            int num = sc.nextInt() - 1;
+            if (num < 0 || num >= ListProduit.size()) {
                 System.out.println("Produit non trouvé");
                 continue;
             }
@@ -178,61 +218,64 @@ public class MainClient {
         System.out.println();
     }
 
-    public static void afficherProduitPanier(HashMap<Produit, Integer> ListProduit){
+    public static void afficherProduitPanier(HashMap<Produit, Integer> ListProduit) {
         System.out.println("Panier : ");
         String header = String.format("%8s | %-30s | %-15s | %-15s | %-15s",
-                "Quantite","Nom Produit", "Marque", "Prix", "Categorie");
+                "Quantite", "Nom Produit", "Marque", "Prix", "Categorie");
 
         System.out.println(separator);
         System.out.println(header);
         System.out.println(separator);
 
-        for (Produit produit : ListProduit.keySet()){
+        for (Produit produit : ListProduit.keySet()) {
             String prix;
-            if (produit.getPrixAuKg() == 0) prix = produit.getPrixUnitaire()+"€/u";
-            else prix = produit.getPrixAuKg()+"€/kg";
+            if (produit.getPrixAuKg() == 0) prix = produit.getPrixUnitaire() + "€/u";
+            else prix = produit.getPrixAuKg() + "€/kg";
             System.out.printf("%8s | %-30s | %-15s | %-15s| %-15s%n",
                     ListProduit.get(produit),
                     produit.getLibelle(),
                     produit.getMarque(),
                     prix,
-                    produit.getCategorie());
+                    produit.getSouCategorie());
 
         }
         System.out.println(separator);
 
         System.out.println();
     }
-    public static void validerPanier(){
+
+    public static void validerPanier() {
         c.validatePanier();
         System.out.println("Panier validé");
         System.out.println("Merci d'avoir effectué vos courses dans nos magasins !");
         System.exit(0);
     }
-    public static void archiverPanier(){
+
+    public static void archiverPanier() {
         System.out.println("Panier archivé");
         panierArchiver.add(c.getPanier().archivePanier());
     }
-    public static void restorerPanier(){
+
+    public static void restorerPanier() {
         System.out.println("Paniers archivés : ");
-        for (Panier p : panierArchiver){
-            System.out.println("Panier n°"+panierArchiver.indexOf(p)+1+" : ");
+        for (Panier p : panierArchiver) {
+            System.out.println("Panier n°" + panierArchiver.indexOf(p) + 1 + " : ");
             afficherProduitPanier(p.getProduits());
         }
     }
-    public static void viderPanier(){
+
+    public static void viderPanier() {
         System.out.println("Etes-vous sûr de vouloir vider votre panier ? (o : oui, autre caractère : non)");
         Scanner sc = new Scanner(System.in);
         String s = sc.next();
         if (s.equals("o")) {
             c.getPanier().clear();
             System.out.println("Panier vidé");
-        }
-        else System.out.println("Opération annulée");
+        } else System.out.println("Opération annulée");
     }
 
 
-    public static void AffProfil(){
+    public static void AffProfil() {
         String s = "";
         while (!s.equals("q")) {
             System.out.println(separator);
@@ -265,24 +308,28 @@ public class MainClient {
 
     }
 
-    public static void AffHabitudesConsommation(){
+    public static void AffHabitudesConsommation() {
         ClientPreferences.getClientPreferences(c.getIdClient(), database);
     }
 
-    public static void ajouterRecommandation(Produit p){
+    public static void ajouterRecommandation(Produit p) {
 
         List<Produit> listProd = Recommandation.Recommander(p, database);
-        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        List<List<String>> periode = database.executeQuery("SELECT periodeId FROM Periode WHERE debutPeriode <= TO_DATE('"+date+"', 'dd-MM-yyyy') AND finPeriode >= TO_DATE('"+date+"', 'dd-MM-yyyy')");
-        if (!periode.isEmpty()){
+        List<List<String>> periode = database.executeQuery("SELECT periodeId\n" +
+                "FROM Periode\n" +
+                "WHERE (TO_CHAR(debutPeriode, 'MM-DD') <= TO_CHAR(SYSDATE, 'MM-DD')\n" +
+                "       AND TO_CHAR(finPeriode, 'MM-DD') >= TO_CHAR(SYSDATE, 'MM-DD'))\n" +
+                "   OR (TO_CHAR(debutPeriode, 'MM-DD') > TO_CHAR(finPeriode, 'MM-DD')\n" +
+                "       AND (TO_CHAR(SYSDATE, 'MM-DD') >= TO_CHAR(debutPeriode, 'MM-DD')\n" +
+                "            OR TO_CHAR(SYSDATE, 'MM-DD') <= TO_CHAR(finPeriode, 'MM-DD')))");
+        if (!periode.isEmpty()) {
             int idPeriode = Integer.parseInt(periode.get(0).get(0));
+            System.out.println(Recommandation.RecommanderPeriode(idPeriode, database));
             listProd.addAll(Recommandation.RecommanderPeriode(idPeriode, database));
-
         }
         System.out.println();
         System.out.println("Produit recomandée et produit de saison :");
         AffProduitList(listProd);
-
 
 
         System.out.println("Ajouter un produit de recomandation au panier ? (o : oui, n : non)");
@@ -290,14 +337,12 @@ public class MainClient {
         String s = sc.next();
 
 
-
-        if(s.equals("o")){
+        if (s.equals("o")) {
             System.out.println("Entrez le numéro du produit à ajouter : ");
-            int num = sc.nextInt()-1;
-            if (num < 0 || num >= listProd.size()){
+            int num = sc.nextInt() - 1;
+            if (num < 0 || num >= listProd.size()) {
                 System.out.println("Produit non trouvé");
-            }
-            else {
+            } else {
                 System.out.println("Entrez la quantité : ");
                 int qte = sc.nextInt();
                 Produit p1 = listProd.get(num);
@@ -308,38 +353,38 @@ public class MainClient {
 
     }
 
-    public static int choixVille(){
+    public static int choixVille() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Dans quelle ville souhaitez-vous faire vos courses ?");
         String ville = sc.next();
 
-        List<List<String>> listeVille = database.executeQuery("SELECT * FROM Magasin WHERE VilleMag = '" + ville+"'");
+        List<List<String>> listeVille = database.executeQuery("SELECT * FROM Magasin WHERE VilleMag = '" + ville + "'");
 
-        if (listeVille == null || listeVille.isEmpty()){
+        if (listeVille == null || listeVille.isEmpty()) {
             System.out.println("Aucun magasin dans cette ville.");
             return 0;
         }
 
         System.out.println("Liste des magasins :");
         String header = String.format("%2s | %-40s | %-40s | %-10s",
-                "n°","Nom Magasin", "Adresse du magasin", "Code postal");
+                "n°", "Nom Magasin", "Adresse du magasin", "Code postal");
 
         System.out.println(separator);
         System.out.println(header);
         System.out.println(separator);
-        for (List<String> row : listeVille){
+        for (List<String> row : listeVille) {
             System.out.printf("%2s | %-40s | %-40s | %-10s%n",
-                    listeVille.indexOf(row)+1,
+                    listeVille.indexOf(row) + 1,
                     row.get(1),
                     row.get(2),
-                    row.get(3)                    );
+                    row.get(3));
         }
         System.out.println(separator);
 
         System.out.println("Entrez le numéro du magasin choisi : ");
-        int numMag = sc.nextInt()-1;
+        int numMag = sc.nextInt() - 1;
 
-        if (numMag < 0 || numMag >= listeVille.size()){
+        if (numMag < 0 || numMag >= listeVille.size()) {
             System.out.println("Magasin non trouvé");
             return 0;
         }
@@ -347,42 +392,42 @@ public class MainClient {
 
     }
 
-    public static void AffProduitList(List<Produit> listProd){
+    public static void AffProduitList(List<Produit> listProd) {
         String header = String.format("%2s | %-30s | %-15s | %-15s | %-15s",
-                "n°","Nom Produit", "Marque", "Prix", "Categorie");
+                "n°", "Nom Produit", "Marque", "Prix", "Categorie");
 
         System.out.println(separator);
         System.out.println(header);
         System.out.println(separator);
 
-        for (Produit produit : listProd){
+        for (Produit produit : listProd) {
             String prix;
-            if (produit.getPrixAuKg() == 0) prix = produit.getPrixUnitaire()+"€/u";
-            else prix = produit.getPrixAuKg()+"€/kg";
+            if (produit.getPrixAuKg() == 0) prix = produit.getPrixUnitaire() + "€/u";
+            else prix = produit.getPrixAuKg() + "€/kg";
             System.out.printf("%2s | %-30s | %-15s | %-15s | %-15s%n",
-                    listProd.indexOf(produit)+1,
+                    listProd.indexOf(produit) + 1,
                     produit.getLibelle(),
                     produit.getMarque(),
                     prix,
-                    produit.getCategorie());
+                    produit.getSouCategorie());
         }
         System.out.println(separator);
     }
 
-    public static void AffProduitBd(List<List<String>> listProd){
+    public static void AffProduitBd(List<List<String>> listProd) {
         String header = String.format("%2s | %-30s | %-15s | %-15s | %-15s",
-                "n°","Nom Produit", "Marque", "Prix", "Categorie");
+                "n°", "Nom Produit", "Marque", "Prix", "Categorie");
 
         System.out.println(separator);
         System.out.println(header);
         System.out.println(separator);
 
-        for (List<String> produit : listProd){
+        for (List<String> produit : listProd) {
             String prix;
-            if (produit.get(2) == null) prix = produit.get(3)+"€/u";
-            else prix = produit.get(2)+"€/kg";
+            if (produit.get(2) == null) prix = produit.get(3) + "€/u";
+            else prix = produit.get(2) + "€/kg";
             System.out.printf("%2s | %-30s | %-15s | %-15s | %-15s%n",
-                    listProd.indexOf(produit)+1,
+                    listProd.indexOf(produit) + 1,
                     produit.get(1),
                     produit.get(7),
                     prix,
@@ -392,7 +437,7 @@ public class MainClient {
         System.out.println(separator);
     }
 
-    public static void AffDerniereCommandes(){
+    public static void AffDerniereCommandes() {
         String requete = "SELECT \n" +
                 "    TO_CHAR(c.HeureDebut, 'YYYY-MM-DD HH24:MI:SS') AS DateCommandeFormattee,\n" +
                 "    c.CommandeId,\n" +
@@ -417,15 +462,15 @@ public class MainClient {
         else {
             System.out.println("Historique des commandes : ");
             String header = String.format("%2s | %-30s | %-15s | %-15s",
-                    "n°","Date", "Montant", "Statut");
+                    "n°", "Date", "Montant", "Statut");
 
             System.out.println(separator);
             System.out.println(header);
             System.out.println(separator);
 
-            for (List<String> row : result){
+            for (List<String> row : result) {
                 System.out.printf("%2s | %-30s | %-15s | %-15s%n",
-                        result.indexOf(row)+1,
+                        result.indexOf(row) + 1,
                         row.get(0),
                         row.get(2) + "€",
                         row.get(3));
@@ -435,16 +480,35 @@ public class MainClient {
         System.out.println("Afficher une commande en détails ? (o : oui, n : non)");
         Scanner sc = new Scanner(System.in);
         String s = sc.next();
-        if (s.equals("o")){
+        if (s.equals("o")) {
             System.out.println("Entrez le numéro de la commande à afficher : ");
-            int num = sc.nextInt()-1;
-            if (num < 0 || num >= result.size()){
+            int num = sc.nextInt() - 1;
+            if (num < 0 || num >= result.size()) {
                 System.out.println("Commande non trouvée");
-            }
-            else {
+            } else {
                 List<List<String>> listProd = database.executeQuery("SELECT p.* FROM Produit p, Composer c WHERE c.CommandeId = " + result.get(num).get(1) + " AND p.ProduitId = c.ProduitId");
                 AffProduitBd(listProd);
             }
         }
+    }
+
+    public static Produit AjouterAuPanier(List<Produit> prods) {
+        System.out.println("Ajouter un produit au panier ? (o : oui, n : non)");
+        Scanner sc = new Scanner(System.in);
+        String s = sc.next();
+        if (s.equals("o")) {
+            System.out.println("Entrez le numéro du produit à ajouter : ");
+            int num = sc.nextInt() - 1;
+            if (num < 0 || num >= prods.size()) {
+                System.out.println("Produit non trouvé");
+            } else {
+                System.out.println("Entrez la quantité : ");
+                int qte = sc.nextInt();
+                Produit p1 = prods.get(num);
+                c.addProduct(p1, qte);
+                return p1;
+            }
+        }
+        return null;
     }
 }
