@@ -45,7 +45,6 @@ public class Produit {
                     cs.NomCat AS "Sou-Categorie",
                     cp.NomCat AS "Categorie Principale"
                 FROM Produit
-                LEFT JOIN Composer ON Produit.ProduitId = Composer.ProduitId
                 JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId
                 JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie
                 JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId
@@ -71,7 +70,6 @@ public class Produit {
                     cs.NomCat AS "Sou-Categorie",
                     cp.NomCat AS "Categorie Principale"
                 FROM Produit
-                LEFT JOIN Composer ON Produit.ProduitId = Composer.ProduitId
                 JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId
                 JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie
                 JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId
@@ -186,6 +184,10 @@ public class Produit {
 
     public void setSouCategorie(String categorie) {
         this.souCategorie = categorie;
+    }
+
+    public String getcategoriePincipale() {
+        return categoriePincipale;
     }
 
     public String getMarque() {
