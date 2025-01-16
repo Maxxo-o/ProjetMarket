@@ -30,6 +30,19 @@ public class Produit {
         this.isBio = bio;
     }
 
+    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids,
+            String souCategorie, String marque, String nutriscore, boolean bio, JDBC database) {
+        this.idProduit = idProduit;
+        this.libelle = libelle;
+        this.prixUnitaire = prixUnitaire;
+        this.prixAuKg = prixAuKg;
+        this.poids = poids;
+        this.souCategorie = souCategorie;
+        this.marque = marque;
+        this.nutriscore = nutriscore;
+        this.isBio = bio;
+    }
+
     // Constructeur par l'id du produit
     public Produit(int idProduit, JDBC database) {
         List<List<String>> result = database.executeQuery(String.format("""
