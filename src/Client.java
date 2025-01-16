@@ -99,18 +99,18 @@ public class Client {
             System.out.println("Le produit a été ajouté à votre panier");
         } else {
             System.out.println("Le produit n'est pas disponible dans ce magasin");
-            List<Produit> recommandations = Remplacement.Recommander(profil, p, idMagasin, database);
-            System.out.println("Voici quelques recommandations : ");
-            for (Produit recommandation : recommandations) {
-                System.out.println("- Proposition " + (recommandations.indexOf(recommandation) + 1) + ": "
-                        + recommandation.getLibelle());
+            List<Produit> prodRemplacement = Remplacement.Remplacer(profil, p, idMagasin, database);
+            System.out.println("Voici plusieurs produits de remplacement : ");
+            for (Produit prodRempla : prodRemplacement) {
+                System.out.println("- Proposition " + (prodRemplacement.indexOf(prodRempla) + 1) + ": "
+                        + prodRempla.getLibelle());
             }
-            System.out.println("Voulez-vous ajouter un de ces produits à votre panier ? (O/N)");
+            System.out.println("Voulez-vous ajouter un de ces produits à votre panier ? (o/n)");
             String nom = sc.nextLine();
-            if (nom.equals("O")) {
+            if (nom.equalsIgnoreCase("o")) {
                 System.out.println("Entrez le numero du produit que vous voulez ajouter : ");
                 String nomProduit = sc.nextLine();
-                Produit produit = recommandations.get(Integer.parseInt(nomProduit) - 1);
+                Produit produit = prodRemplacement.get(Integer.parseInt(nomProduit) - 1);
 
                 this.addProduct(produit, quantite);
                 if (!profil.getArticlesPref().contains(produit)) {

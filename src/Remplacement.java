@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Remplacement {
     private static List<Produit> produitsRemplacement;
-    public static List<Produit> Recommander(Profil prof , Produit prod, int idMagasin, JDBC database){
+    public static List<Produit> Remplacer(Profil prof , Produit prod, int idMagasin, JDBC database){
         produitsRemplacement = new ArrayList<>();
 
         // Regarder dans la liste des produits préférés du client en premier
@@ -35,7 +35,7 @@ public class Remplacement {
                     "AND s.QteStock > 0 \n" +
                     "AND s.MagId = " + idMagasin + "\n" +
                     "AND c.ProduitId = p.ProduitId\n" +
-                    "AND p.Categorie = '" + prod.getCategorie() + "'\n" +
+                    "AND p.CategorieId = '" + prod.getCategorie() + "'\n" +
                     "AND p.ProduitId != " + prod.getIdProduit() + "\n" +
                     "AND t.NomProfil IN (\n";
 
@@ -55,7 +55,7 @@ public class Remplacement {
                 double prixAuKg = 0;
                 if (resultProfil.get(0).get(3) != null) prixUnitaire = Double.parseDouble(resultProfil.get(0).get(3));
                 if (resultProfil.get(0).get(2) != null) prixAuKg = Double.parseDouble(resultProfil.get(0).get(2));
-                produitsCategorieProfil.add(new Produit(Integer.parseInt(row.get(0)), row.get(1), prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5),Boolean.parseBoolean(row.get(8))));
+                produitsCategorieProfil.add(new Produit(Integer.parseInt(row.get(0)), row.get(1), prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5),Boolean.parseBoolean(row.get(8)),database));
             }
 
             //filtrer les produits préférés par catégorie, marque et nutriscore
@@ -76,7 +76,7 @@ public class Remplacement {
         }
 
         // Récupérer les produits de la même catégorie
-        List<List<String>> result = database.executeQuery("SELECT * FROM Produit p  WHERE Categorie = '" + prod.getCategorie() +"' AND ProduitId != " + prod.getIdProduit());
+        List<List<String>> result = database.executeQuery("SELECT * FROM Produit p  WHERE CategorieId = '" + prod.getCategorie() +"' AND ProduitId != " + prod.getIdProduit());
         List<Produit> produitsCategorie = new ArrayList<>();
 
 
@@ -86,7 +86,7 @@ public class Remplacement {
             double prixAuKg = 0;
             if (result.get(0).get(3) != null) prixUnitaire = Double.parseDouble(result.get(0).get(3));
             if (result.get(0).get(2) != null)  prixAuKg = Double.parseDouble(result.get(0).get(2));
-            produitsCategorie.add(new Produit(Integer.parseInt(row.get(0)), row.get(1),prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5), Boolean.parseBoolean(row.get(8))));
+            produitsCategorie.add(new Produit(Integer.parseInt(row.get(0)), row.get(1),prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5), Boolean.parseBoolean(row.get(8)),database));
         }
 
         //filtrer les produits de la même catégorie par marque et nutriscore
