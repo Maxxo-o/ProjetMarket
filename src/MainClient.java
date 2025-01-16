@@ -176,13 +176,18 @@ public class MainClient {
                         """
         );
 
+
+
         System.out.println("Produits du moment : ");
+
+
         AffProduitBd(prods);
         List<Produit> listProd = new ArrayList<>();
         for (List<String> row : prods) {
             Produit p = new Produit(row);
             listProd.add(p);
         }
+
         AjouterAuPanier(listProd);
 
     }
@@ -312,9 +317,8 @@ public class MainClient {
         ClientPreferences.getClientPreferences(c.getIdClient(), database);
     }
 
-    public static void ajouterRecommandation(Produit p) {
-
-        List<Produit> listProd = Recommandation.Recommander(p, database);
+    //Retourne l'id de la periode si il le trouve et -1 sinon
+    public static int getPeriodeId(){
         List<List<String>> periode = database.executeQuery("SELECT periodeId\n" +
                 "FROM Periode\n" +
                 "WHERE (TO_CHAR(debutPeriode, 'MM-DD') <= TO_CHAR(SYSDATE, 'MM-DD')\n" +
@@ -323,11 +327,22 @@ public class MainClient {
                 "       AND (TO_CHAR(SYSDATE, 'MM-DD') >= TO_CHAR(debutPeriode, 'MM-DD')\n" +
                 "            OR TO_CHAR(SYSDATE, 'MM-DD') <= TO_CHAR(finPeriode, 'MM-DD')))");
         if (!periode.isEmpty()) {
-            int idPeriode = Integer.parseInt(periode.get(0).get(0));
-            System.out.println(Recommandation.RecommanderPeriode(idPeriode, database));
-            listProd.addAll(Recommandation.RecommanderPeriode(idPeriode, database));
+            return Integer.parseInt(periode.get(0).get(0));
         }
+        else return -1;
+    }
+
+
+    public static void ajouterRecommandation(Produit p) {
+
+        List<Produit> listProd = Recommandation.Recommander(p, database);
+        int idPeriode = getPeriodeId();
+
+        if (idPeriode != -1) listProd.addAll(Recommandation.RecommanderPeriode(idPeriode, database));
+
         System.out.println();
+        if (listProd.isEmpty()) return;
+
         System.out.println("Produit recomandée et produit de saison :");
         AffProduitList(listProd);
 

@@ -23,7 +23,6 @@ public class Recommandation {
                 "    JOIN Recommander r ON Produit.ProduitId = r.ProduitId\n" +
                 "    WHERE r.ProduitId_est_lié = " + p.getIdProduit()
         );
-        System.out.println(result);
         return getProduitsRecommandes(result, database);
     }
     public static List<Produit> RecommanderPeriode(int periodeId, JDBC database){
@@ -41,13 +40,12 @@ public class Recommandation {
                 "    FROM Produit\n" +
                 "    JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId\n" +
                 "    JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie\n" +
-                "    JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId\n" +"" +
+                "    JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId\n" +
                 "    JOIN Approprier a ON Produit.ProduitId = a.ProduitId\n" +
-                "    JOIN Periode pe ON Approprier.PeriodeId = pe.PeriodeId\n" +
+                "    JOIN Periode pe ON a.PeriodeId = pe.PeriodeId\n" +
                 "    WHERE pe.periodeId = " + periodeId
         );
 
-        System.out.println(result);
         return getProduitsRecommandes(result, database);
     }
 
