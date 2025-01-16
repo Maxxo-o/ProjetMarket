@@ -46,6 +46,9 @@ public class Client {
 
     public void validatePanier() {
 
+        //TODO: update typeProfil et prodPref
+        //TODO: demander mode de livraison
+
         for (Produit p : panier.getProduits().keySet()) {
             List<List<String>> result = database.executeQuery(
                     "SELECT * FROM Stocker WHERE produitId = " + p.getIdProduit() + " AND MagId = " + idMagasin);
@@ -83,6 +86,8 @@ public class Client {
                     idGen,
                     panier.getProduits().get(p)));
         }
+        ClientPreferences.updatePreferer(idClient, database);
+        ClientPreferences.updateAppartenirType(idClient, database);
     }
 
     public void addProduct(Produit p, int quantite) {
