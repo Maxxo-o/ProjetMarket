@@ -1,85 +1,121 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class Produit {
 
     private int idProduit;
     private String libelle;
-    private double prixUnitaire;
     private double prixAuKg;
+    private double prixUnitaire;
     private double poids;
-    private String categorie;
-    private String marque;
     private String nutriscore;
+    private String marque;
     private boolean isBio;
-    private JDBC database;
-
+    private String souCategorie;
+    private String categoriePincipale;
 
     // CONSTRUCTEURS
 
     // Constructeur complet
-    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids, String categorie, String marque, String nutriscore, boolean bio, JDBC database) {
+    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids,
+            String souCategorie, String categoriePincipale, String marque, String nutriscore, boolean bio) {
         this.idProduit = idProduit;
         this.libelle = libelle;
         this.prixUnitaire = prixUnitaire;
         this.prixAuKg = prixAuKg;
         this.poids = poids;
-        this.categorie = categorie;
+        this.souCategorie = souCategorie;
+        this.categoriePincipale = categoriePincipale;
         this.marque = marque;
         this.nutriscore = nutriscore;
         this.isBio = bio;
-        this.database = database;
     }
-
 
     // Constructeur par l'id du produit
     public Produit(int idProduit, JDBC database) {
-        this.database = database;
-
-        List<List<String>> result = database.executeQuery("SELECT p.* FROM Produit p, Categorie c WHERE produitId = "+ idProduit+" AND p.CategorieId = c.CategorieId");
-        if (!result.isEmpty()) ContructFromBd(result);
-        else System.out.println("Produit non trouvé");
+        List<List<String>> result = database.executeQuery(String.format("""
+                SELECT DISTINCT
+                    Produit.ProduitId,
+                    NomProd,
+                    PrixAuKg,
+                    PrixUnitaire,
+                    Poids,
+                    Nutriscore,
+                    Marque,
+                    bio,
+                    cs.NomCat AS "Sou-Categorie",
+                    cp.NomCat AS "Categorie Principale"
+                FROM Produit
+                LEFT JOIN Composer ON Produit.ProduitId = Composer.ProduitId
+                JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId
+                JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie
+                JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId
+                WHERE Produit.ProduitId = %s
+                """, idProduit));
+        if (!result.isEmpty())
+            ContructFromBd(result);
+        else
+            System.out.println("Produit non trouvé");
     }
 
     public Produit(String libelle, JDBC database) {
-        this.database = database;
-        List<List<String>> result = database.executeQuery("SELECT p.* FROM Produit p, Categorie c WHERE NomProd = "+ libelle+" AND p.CategorieId = c.CategorieId");
-        if (!result.isEmpty()) ContructFromBd(result);
-        else System.out.println("Produit non trouvé");
+        List<List<String>> result = database.executeQuery(String.format("""
+                SELECT DISTINCT
+                    Produit.ProduitId,
+                    NomProd,
+                    PrixAuKg,
+                    PrixUnitaire,
+                    Poids,
+                    Nutriscore,
+                    Marque,
+                    bio,
+                    cs.NomCat AS "Sou-Categorie",
+                    cp.NomCat AS "Categorie Principale"
+                FROM Produit
+                LEFT JOIN Composer ON Produit.ProduitId = Composer.ProduitId
+                JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId
+                JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie
+                JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId
+                WHERE NomProd = %s
+                """, libelle));
+        if (!result.isEmpty())
+            ContructFromBd(result);
+        else
+            System.out.println("Produit non trouvé");
     }
 
-    private void ContructFromBd(List<List<String>> result){
-
+    private void ContructFromBd(List<List<String>> result) {
         this.idProduit = Integer.parseInt(result.get(0).get(0));
         this.libelle = result.get(0).get(1);
-        if (result.get(0).get(3) != null) this.prixUnitaire = Double.parseDouble(result.get(0).get(3));
-        else this.prixUnitaire = 0;
-        if (result.get(0).get(2) != null)  this.prixAuKg = Double.parseDouble(result.get(0).get(2));
-        else this.prixAuKg = 0;
-        if (result.get(0).get(4) != null) this.poids = Double.parseDouble(result.get(0).get(4));
-        else this.poids = 0;
+        this.prixAuKg = (result.get(0).get(2) != null) ? Double.parseDouble(result.get(0).get(2)) : 0;
+        this.prixUnitaire = (result.get(0).get(3) != null) ? Double.parseDouble(result.get(0).get(3)) : 0;
+        this.poids = (result.get(0).get(4) != null) ? Double.parseDouble(result.get(0).get(4)) : 0;
         this.nutriscore = result.get(0).get(5);
-        this.categorie = result.get(0).get(8);
         this.marque = result.get(0).get(6);
         this.isBio = Boolean.parseBoolean(result.get(0).get(7));
+        this.souCategorie = result.get(0).get(8);
+        this.categoriePincipale = result.get(0).get(9);
     }
 
     // Constructeur par copie
     public Produit(Produit produit) {
         this.idProduit = produit.idProduit;
         this.libelle = produit.libelle;
-        this.prixUnitaire = produit.prixUnitaire;
         this.prixAuKg = produit.prixAuKg;
+        this.prixUnitaire = produit.prixUnitaire;
         this.poids = produit.poids;
-        this.categorie = produit.categorie;
-        this.marque = produit.marque;
         this.nutriscore = produit.nutriscore;
+        this.marque = produit.marque;
+        this.isBio = produit.isBio;
+        this.souCategorie = produit.souCategorie;
+        this.categoriePincipale = produit.categoriePincipale;
     }
 
-    public String queryPushProductToBd(){
-        return "INSERT INTO Produit (NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque) VALUES ('" + libelle + "', " + prixAuKg + ", " + prixUnitaire + ", " + poids + ", '" + nutriscore + "', '" + categorie + "', '" + marque + "')";
+    // N'utilise pas
+    public String queryPushProductToBd() {
+        return "INSERT INTO Produit (NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque) VALUES ('"
+                + libelle + "', " + prixAuKg + ", " + prixUnitaire + ", " + poids + ", '" + nutriscore + "', '"
+                + souCategorie + "', '" + marque + "')";
     }
-
 
     @Override
     public String toString() {
@@ -87,9 +123,9 @@ public class Produit {
                 "d'id " + idProduit +
                 ", a pour libelle '" + libelle + '\'' +
                 ", a pour prix unitaire " + prixUnitaire + '€' +
-                ", a pour prix au kilo " + prixAuKg +'€' +
+                ", a pour prix au kilo " + prixAuKg + '€' +
                 ", a pour poids " + poids + "g" +
-                ", a pour categorie '" + categorie + '\'' +
+                ", a pour categorie '" + souCategorie + '\'' +
                 ", a pour marque '" + marque + '\'' +
                 ", a pour nutriscore '" + nutriscore + '\'' +
                 ", et est " + (isBio ? "bio" : "non-bio") +
@@ -144,12 +180,12 @@ public class Produit {
         this.poids = poids;
     }
 
-    public String getCategorie() {
-        return database.executeQuery("SELECT NomCat FROM Categorie WHERE CategorieId = " + categorie).get(0).get(0);
+    public String getSouCategorie() {
+        return souCategorie;
     }
 
-    public void setCategorie(String categorie) {
-        this.categorie = categorie;
+    public void setSouCategorie(String categorie) {
+        this.souCategorie = categorie;
     }
 
     public String getMarque() {
