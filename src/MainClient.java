@@ -334,7 +334,6 @@ public class MainClient {
 
 
     public static void ajouterRecommandation(Produit p) {
-
         List<Produit> listProd = Recommandation.Recommander(p, database);
         int idPeriode = getPeriodeId();
 
@@ -343,6 +342,7 @@ public class MainClient {
         System.out.println();
         if (listProd.isEmpty()) return;
 
+        Statistique.NbProposeRecom++;
         System.out.println("Produit recomandée et produit de saison :");
         AffProduitList(listProd);
 
@@ -362,6 +362,7 @@ public class MainClient {
                 int qte = sc.nextInt();
                 Produit p1 = listProd.get(num);
                 c.addProduct(p1, qte);
+                Statistique.NbChoisiRecom++;
             }
         }
 

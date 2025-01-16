@@ -100,6 +100,7 @@ public class Client {
         } else {
             System.out.println("Le produit n'est pas disponible dans ce magasin");
             List<Produit> prodRemplacement = Remplacement.Remplacer(profil, p, idMagasin, database);
+            Statistique.NbProposeRempla++;
             System.out.println("Voici plusieurs produits de remplacement : ");
             for (Produit prodRempla : prodRemplacement) {
                 System.out.println("- Proposition " + (prodRemplacement.indexOf(prodRempla) + 1) + ": "
@@ -118,6 +119,7 @@ public class Client {
                     database.execute("INSERT INTO Preferer (ProduitId,ClientId) VALUES (" + produit.getIdProduit()
                             + ", " + idClient + ")");
                 }
+                Statistique.NbPChoisiRempla++;
             }
         }
 
