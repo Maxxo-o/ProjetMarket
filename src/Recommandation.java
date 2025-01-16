@@ -6,15 +6,15 @@ public class Recommandation {
 
     public static List<Produit> Recommander(Produit p, JDBC database){
         List<List<String>> result = database.executeQuery("SELECT p.* FROM RECOMMANDER r, Produit p WHERE r.ProduitId = p.ProduitID AND r.ProduitId_est_lié = " + p.getIdProduit());
-        return getProduitsRecommandes(result);
+        return getProduitsRecommandes(result, database);
     }
     public static List<Produit> RecommanderPeriode(int periodeId, JDBC database){
         List<List<String>> result = database.executeQuery(" SELECT * FROM RECOMMANDER_Periode WHERE periodeId = " + periodeId);
-        return getProduitsRecommandes(result);
+        return getProduitsRecommandes(result, database);
     }
 
 
-    private static List<Produit> getProduitsRecommandes(List<List<String>> result){
+    private static List<Produit> getProduitsRecommandes(List<List<String>> result, JDBC database){
         List<Produit> produits = new ArrayList<>();
         for (List<String> row : result){
             double prixUnitaire = 0;
@@ -25,7 +25,7 @@ public class Recommandation {
             if (row.get(3) != null)  prixAuKg = Double.parseDouble(row.get(3));
             if (row.get(4) != null) poids = Double.parseDouble(row.get(4));
 
-            produits.add(new Produit(Integer.parseInt(row.get(0)), row.get(1),prixUnitaire, prixAuKg, poids, row.get(6), row.get(7), row.get(5), Boolean.parseBoolean(row.get(8))));
+            produits.add(new Produit(Integer.parseInt(row.get(0)), row.get(1),prixUnitaire, prixAuKg, poids, row.get(8), row.get(6), row.get(5), Boolean.parseBoolean(row.get(7)),database));
         }
 
         return produits;

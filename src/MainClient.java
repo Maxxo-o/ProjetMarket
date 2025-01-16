@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +47,7 @@ public class MainClient {
             System.out.println("a. Consulter le catalogue de produit");
             System.out.println("c. Consulter son panier");
             System.out.println("p. Consulter son profil");
+            System.out.println("o. /!\\ Voir les produit du moment /!\\");
             System.out.println("q. Quitter l'application");
             System.out.println(separator);
 
@@ -59,6 +62,9 @@ public class MainClient {
                     break;
                 case 'p':
                     AffProfil();
+                    break;
+                case 'o':
+                    ProdMoment();
                     break;
                 case 'q':
                     cas5();
@@ -135,8 +141,11 @@ public class MainClient {
             }
         }
     }
-    public static void cas4(){
-        System.out.println("Cas 4");
+    public static void ProdMoment(){
+
+
+
+        System.out.println(separator);
     }
     public static void cas5(){
         System.out.println("Merci d'avoir utilisé notre application");
@@ -263,10 +272,18 @@ public class MainClient {
     public static void ajouterRecommandation(Produit p){
 
         List<Produit> listProd = Recommandation.Recommander(p, database);
-        System.out.println();
-        System.out.println("Produit recomandée :");
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        List<List<String>> periode = database.executeQuery("SELECT periodeId FROM Periode WHERE debutPeriode <= TO_DATE('"+date+"', 'dd-MM-yyyy') AND finPeriode >= TO_DATE('"+date+"', 'dd-MM-yyyy')");
+        if (!periode.isEmpty()){
+            int idPeriode = Integer.parseInt(periode.get(0).get(0));
+            listProd.addAll(Recommandation.RecommanderPeriode(idPeriode, database));
 
+        }
+        System.out.println();
+        System.out.println("Produit recomandée et produit de saison :");
         AffProduitList(listProd);
+
+
 
         System.out.println("Ajouter un produit de recomandation au panier ? (o : oui, n : non)");
         Scanner sc = new Scanner(System.in);

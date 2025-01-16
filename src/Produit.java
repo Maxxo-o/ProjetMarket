@@ -12,12 +12,13 @@ public class Produit {
     private String marque;
     private String nutriscore;
     private boolean isBio;
+    private JDBC database;
 
 
     // CONSTRUCTEURS
 
     // Constructeur complet
-    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids, String categorie, String marque, String nutriscore, boolean bio) {
+    public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids, String categorie, String marque, String nutriscore, boolean bio, JDBC database) {
         this.idProduit = idProduit;
         this.libelle = libelle;
         this.prixUnitaire = prixUnitaire;
@@ -27,18 +28,22 @@ public class Produit {
         this.marque = marque;
         this.nutriscore = nutriscore;
         this.isBio = bio;
+        this.database = database;
     }
 
 
     // Constructeur par l'id du produit
     public Produit(int idProduit, JDBC database) {
-        List<List<String>> result = database.executeQuery("SELECT p.*, c.NomCat FROM Produit p, Categorie c WHERE produitId = "+ idProduit+" AND p.CategorieId = c.CategorieId");
+        this.database = database;
+
+        List<List<String>> result = database.executeQuery("SELECT p.* FROM Produit p, Categorie c WHERE produitId = "+ idProduit+" AND p.CategorieId = c.CategorieId");
         if (!result.isEmpty()) ContructFromBd(result);
         else System.out.println("Produit non trouvé");
     }
 
     public Produit(String libelle, JDBC database) {
-        List<List<String>> result = database.executeQuery("SELECT p.*, c.NomCat FROM Produit p, Categorie c WHERE NomProd = "+ libelle+" AND p.CategorieId = c.CategorieId");
+        this.database = database;
+        List<List<String>> result = database.executeQuery("SELECT p.* FROM Produit p, Categorie c WHERE NomProd = "+ libelle+" AND p.CategorieId = c.CategorieId");
         if (!result.isEmpty()) ContructFromBd(result);
         else System.out.println("Produit non trouvé");
     }
@@ -140,7 +145,7 @@ public class Produit {
     }
 
     public String getCategorie() {
-        return categorie;
+        return database.executeQuery("SELECT NomCat FROM Categorie WHERE CategorieId = " + categorie).get(0).get(0);
     }
 
     public void setCategorie(String categorie) {
