@@ -10,6 +10,7 @@ public class Produit {
     private String nutriscore;
     private String marque;
     private boolean isBio;
+    private int categorieId;
     private String souCategorie;
     private String categoriePincipale;
 
@@ -31,19 +32,19 @@ public class Produit {
     }
 
     public Produit(int idProduit, String libelle, double prixUnitaire, double prixAuKg, double poids,
-            String souCategorie, String marque, String nutriscore, boolean bio, JDBC database) {
+            int categorieId, String marque, String nutriscore, boolean bio, JDBC database) {
         this.idProduit = idProduit;
         this.libelle = libelle;
         this.prixUnitaire = prixUnitaire;
         this.prixAuKg = prixAuKg;
         this.poids = poids;
-        this.souCategorie = souCategorie;
+        this.categorieId = categorieId;
         this.marque = marque;
         this.nutriscore = nutriscore;
         this.isBio = bio;
     }
-    
-    public Produit(List<String> prod){
+
+    public Produit(List<String> prod) {
         ContructFromBd(prod);
     }
 
@@ -125,11 +126,20 @@ public class Produit {
         this.categoriePincipale = produit.categoriePincipale;
     }
 
-    // N'utilise pas
     public String queryPushProductToBd() {
-        return "INSERT INTO Produit (NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Categorie, Marque) VALUES ('"
-                + libelle + "', " + prixAuKg + ", " + prixUnitaire + ", " + poids + ", '" + nutriscore + "', '"
-                + souCategorie + "', '" + marque + "')";
+        return String.format("""
+                INTO Produit (ProduitId, NomProd, PrixAuKg, PrixUnitaire, Poids, Nutriscore, Marque, Bio, CategorieId)
+                VALUES (%s,'%s', %s, %s, %s, '%s', '%s', '%s', %s)
+                """,
+                idProduit,
+                libelle,
+                prixAuKg,
+                prixUnitaire,
+                poids,
+                nutriscore,
+                marque,
+                isBio ? "TRUE" : "FALSE",
+                categorieId);
     }
 
     @Override
