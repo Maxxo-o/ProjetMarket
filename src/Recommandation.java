@@ -11,11 +11,11 @@ public class Recommandation {
                 "        PrixAuKg,\n" +
                 "        PrixUnitaire,\n" +
                 "        Poids,\n" +
-                "        Nutriscore,\n" +
-                "        Marque,\n" +
-                "        bio,\n" +
                 "        cs.NomCat AS \"Sou-Categorie\",\n" +
-                "        cp.NomCat AS \"Categorie Principale\"\n" +
+                "        cp.NomCat AS \"Categorie Principale\",\n" +
+                "        Marque,\n" +
+                "        Nutriscore,\n" +
+                "        bio\n" +
                 "    FROM Produit\n" +
                 "    JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId\n" +
                 "    JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie\n" +
@@ -23,7 +23,7 @@ public class Recommandation {
                 "    JOIN Recommander r ON Produit.ProduitId = r.ProduitId\n" +
                 "    WHERE r.ProduitId_est_lié = " + p.getIdProduit()
         );
-        return getProduitsRecommandes(result, database);
+        return getProduitsRecommandes(result);
     }
     public static List<Produit> RecommanderPeriode(int periodeId, JDBC database){
         List<List<String>> result = database.executeQuery("SELECT DISTINCT\n" +
@@ -32,11 +32,11 @@ public class Recommandation {
                 "        PrixAuKg,\n" +
                 "        PrixUnitaire,\n" +
                 "        Poids,\n" +
-                "        Nutriscore,\n" +
-                "        Marque,\n" +
-                "        bio,\n" +
                 "        cs.NomCat AS \"Sou-Categorie\",\n" +
-                "        cp.NomCat AS \"Categorie Principale\"\n" +
+                "        cp.NomCat AS \"Categorie Principale\",\n" +
+                "        Marque,\n" +
+                "        Nutriscore,\n" +
+                "        bio\n" +
                 "    FROM Produit\n" +
                 "    JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId\n" +
                 "    JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie\n" +
@@ -46,11 +46,11 @@ public class Recommandation {
                 "    WHERE pe.periodeId = " + periodeId
         );
 
-        return getProduitsRecommandes(result, database);
+        return getProduitsRecommandes(result);
     }
 
 
-    private static List<Produit> getProduitsRecommandes(List<List<String>> result, JDBC database){
+    private static List<Produit> getProduitsRecommandes(List<List<String>> result){
         List<Produit> produits = new ArrayList<>();
         for (List<String> row : result){
             produits.add(new Produit(row));

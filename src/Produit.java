@@ -100,16 +100,17 @@ public class Produit {
     }
 
     private void ContructFromBd(List<String> result) {
+
         this.idProduit = Integer.parseInt(result.get(0));
         this.libelle = result.get(1);
         this.prixAuKg = (result.get(2) != null) ? Double.parseDouble(result.get(2)) : 0;
         this.prixUnitaire = (result.get(3) != null) ? Double.parseDouble(result.get(3)) : 0;
         this.poids = (result.get(4) != null) ? Double.parseDouble(result.get(4)) : 0;
-        this.nutriscore = result.get(5);
-        this.marque = result.get(6);
-        this.isBio = Boolean.parseBoolean(result.get(7));
-        this.souCategorie = result.get(8);
-        this.categoriePincipale = result.get(9);
+        this.nutriscore = result.get(8);
+        this.marque = result.get(7);
+        this.isBio = Boolean.parseBoolean(result.get(9));
+        this.souCategorie = result.get(5);
+        this.categoriePincipale = result.get(6);
     }
 
     // Constructeur par copie

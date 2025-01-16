@@ -88,6 +88,7 @@ public class Client {
         }
         ClientPreferences.updatePreferer(idClient, database);
         ClientPreferences.updateAppartenirType(idClient, database);
+        Recommandation.CreerRecommandation(panier, database);
     }
 
     public void addProduct(Produit p, int quantite) {

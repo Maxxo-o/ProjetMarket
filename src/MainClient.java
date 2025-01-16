@@ -164,11 +164,11 @@ public class MainClient {
                     PrixAuKg,
                     PrixUnitaire,
                     Poids,
-                    Nutriscore,
-                    Marque,
-                    bio,
                     cs.NomCat AS "Sou-Categorie",
-                    cp.NomCat AS "Categorie Principale"
+                    cp.NomCat AS "Categorie Principale",
+                    Marque,
+                    Nutriscore,
+                    bio
                 FROM Produit
                 JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId
                 JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie
@@ -199,32 +199,6 @@ public class MainClient {
         System.exit(0);
     }
 
-    public static void afficherProduits(List<List<String>> ListProduit) {
-        System.out.println("Liste des produits : ");
-
-        AffProduitBd(ListProduit);
-
-        System.out.println("Ajouter un produit au panier ? (o : oui, n : non)");
-        Scanner sc = new Scanner(System.in);
-        String s = sc.next();
-
-        while (!s.equals("n")) {
-            System.out.println("Entrez le numéro du produit à ajouter : ");
-            int num = sc.nextInt() - 1;
-            if (num < 0 || num >= ListProduit.size()) {
-                System.out.println("Produit non trouvé");
-                continue;
-            }
-            System.out.println("Entrez la quantité : ");
-            int qte = sc.nextInt();
-            Produit p1 = new Produit(Integer.parseInt(ListProduit.get(num).get(0)), database);
-            c.addProduct(p1, qte);
-            ajouterRecommandation(p1);
-            System.out.println("Ajouter un autre produit au panier ? (o : oui, n : non)");
-            s = sc.next();
-        }
-        System.out.println();
-    }
 
     public static void afficherProduitPanier(HashMap<Produit, Integer> ListProduit) {
         System.out.println("Panier : ");

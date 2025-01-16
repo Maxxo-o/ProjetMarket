@@ -14,7 +14,7 @@ public class AddProduitsCSV {
         Scanner sc = new Scanner(System.in);
         File file;
         while (true) {
-            System.out.println("Entrez votre chemin du ficher csv (Ne pas mettre espace dans votre chemin): ");
+            System.out.println("Entrez le chemin de votre ficher csv (Ne pas mettre d'espace dans votre chemin): ");
             String input = sc.nextLine();
             file = new File(input);
             if (!file.exists()) {

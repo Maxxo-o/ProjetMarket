@@ -18,11 +18,9 @@ public class MainAdmin {
             System.out.println("-----------------------------------------------");
             System.out.println("1. Voir les statistiques");
             System.out.println("2. Mettre une categorie en avant");
-            System.out.println("3. Ajouter des produit aux catalogues");
-            System.out.println("4. Augmenter le stock d'un produit");
-            System.out.println("5. Ajouter des produits au catalogue depuis un fichier CSV");
-            System.out.println("6. Changer d'utilisateur");
-            System.out.println("7. Quitter");
+            System.out.println("3. Ajouter des produits au catalogue depuis un fichier CSV");
+            System.out.println("4. Changer d'utilisateur");
+            System.out.println("5. Quitter");
             System.out.println("-----------------------------------------------");
             System.out.println();
             choix = sc.nextInt();
@@ -37,16 +35,12 @@ public class MainAdmin {
                     mettreEnAvant();
                     break;
                 case 3:
+                    AddProduitsCSV.askPath(database);
                     break;
                 case 4:
-                    break;
-                case 5:
-
-                    break;
-                case 6:
                     MainClient.main(args);
                     break;
-                case 7:
+                case 5:
                     System.exit(0);
                     break;
                 default:
