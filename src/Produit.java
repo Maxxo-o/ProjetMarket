@@ -42,6 +42,10 @@ public class Produit {
         this.nutriscore = nutriscore;
         this.isBio = bio;
     }
+    
+    public Produit(List<String> prod){
+        ContructFromBd(prod);
+    }
 
     // Constructeur par l'id du produit
     public Produit(int idProduit, JDBC database) {
@@ -64,7 +68,7 @@ public class Produit {
                 WHERE Produit.ProduitId = %s
                 """, idProduit));
         if (!result.isEmpty())
-            ContructFromBd(result);
+            ContructFromBd(result.get(0));
         else
             System.out.println("Produit non trouvé");
     }
@@ -89,22 +93,22 @@ public class Produit {
                 WHERE NomProd = %s
                 """, libelle));
         if (!result.isEmpty())
-            ContructFromBd(result);
+            ContructFromBd(result.get(0));
         else
             System.out.println("Produit non trouvé");
     }
 
-    private void ContructFromBd(List<List<String>> result) {
-        this.idProduit = Integer.parseInt(result.get(0).get(0));
-        this.libelle = result.get(0).get(1);
-        this.prixAuKg = (result.get(0).get(2) != null) ? Double.parseDouble(result.get(0).get(2)) : 0;
-        this.prixUnitaire = (result.get(0).get(3) != null) ? Double.parseDouble(result.get(0).get(3)) : 0;
-        this.poids = (result.get(0).get(4) != null) ? Double.parseDouble(result.get(0).get(4)) : 0;
-        this.nutriscore = result.get(0).get(5);
-        this.marque = result.get(0).get(6);
-        this.isBio = Boolean.parseBoolean(result.get(0).get(7));
-        this.souCategorie = result.get(0).get(8);
-        this.categoriePincipale = result.get(0).get(9);
+    private void ContructFromBd(List<String> result) {
+        this.idProduit = Integer.parseInt(result.get(0));
+        this.libelle = result.get(1);
+        this.prixAuKg = (result.get(2) != null) ? Double.parseDouble(result.get(2)) : 0;
+        this.prixUnitaire = (result.get(3) != null) ? Double.parseDouble(result.get(3)) : 0;
+        this.poids = (result.get(4) != null) ? Double.parseDouble(result.get(4)) : 0;
+        this.nutriscore = result.get(5);
+        this.marque = result.get(6);
+        this.isBio = Boolean.parseBoolean(result.get(7));
+        this.souCategorie = result.get(8);
+        this.categoriePincipale = result.get(9);
     }
 
     // Constructeur par copie
