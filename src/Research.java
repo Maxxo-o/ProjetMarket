@@ -1,6 +1,5 @@
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Research {
@@ -34,21 +33,7 @@ public class Research {
                             || e.get(6).toLowerCase().contains(keyword.toLowerCase())
                             || e.get(7).toLowerCase().contains(keyword.toLowerCase());
                 })
-                .filter(Objects::nonNull)
-                .map(e -> {
-                    return new Produit(
-                            Integer.parseInt(e.get(0)), // ProduitId
-                            e.get(1), // NomProd
-                            e.get(2) != null ? Double.parseDouble(e.get(2)) : 0, // PrixUnitaire
-                            e.get(3) != null ? Double.parseDouble(e.get(3)) : 0, // PrixAuKg
-                            e.get(4) != null ? Double.parseDouble(e.get(4)) : 0, // Poids
-                            e.get(5), // Sou-Categorie
-                            e.get(6), // Categorie Principale
-                            e.get(7), // Marque
-                            e.get(8), // Nutriscore
-                            Boolean.parseBoolean(e.get(9)) // Bio
-                    );
-                })
+                .map(e -> new Produit(e))
                 .collect(Collectors.toList());
     }
 
@@ -60,21 +45,7 @@ public class Research {
                     return e.get(6).toLowerCase().contains(keyword.toLowerCase())
                             || e.get(7).toLowerCase().contains(keyword.toLowerCase());
                 })
-                .filter(Objects::nonNull)
-                .map(e -> {
-                    return new Produit(
-                            Integer.parseInt(e.get(0)), // ProduitId
-                            e.get(1), // NomProd
-                            e.get(2) != null ? Double.parseDouble(e.get(2)) : 0, // PrixUnitaire
-                            e.get(3) != null ? Double.parseDouble(e.get(3)) : 0, // PrixAuKg
-                            e.get(4) != null ? Double.parseDouble(e.get(4)) : 0, // Poids
-                            e.get(5), // Sou-Categorie
-                            e.get(6), // Categorie Principale
-                            e.get(7), // Marque
-                            e.get(8), // Nutriscore
-                            Boolean.parseBoolean(e.get(9)) // Bio
-                    );
-                })
+                .map(e -> new Produit(e))
                 .collect(Collectors.toList());
     }
 
