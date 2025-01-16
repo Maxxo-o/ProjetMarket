@@ -28,14 +28,17 @@ public class Remplacement {
 
         // PASSER PAR LES PRODUITS ASSOCIES AUX TYPES DE PROFILS DU CLIENT
         if (!prof.getNomProfils().isEmpty()) {
-            String query = "SELECT p.* \n" +
-                    "FROM Produit p, Correspondre c, TypesDeProfil t, Stocker s \n" +
+            String query = "SELECT p.ProduitId, p.NomProd,p.PrixAuKg, p.PrixUnitaire, Poids, cs.NomCat AS \"Sou-Categorie\", cp.NomCat AS \"Categorie Principale\",p.Marque, p.nutriscore,p.bio\n" +
+                    "FROM Produit p, Correspondre c, TypesDeProfil t, Stocker s, Categorie cs, Etre e, Categorie cp \n" +
                     "WHERE t.ProfilId = c.ProfilId \n" +
                     "AND s.ProduitId = p.ProduitId \n" +
                     "AND s.QteStock > 0 \n" +
                     "AND s.MagId = " + idMagasin + "\n" +
                     "AND c.ProduitId = p.ProduitId\n" +
-                    "AND p.CategorieId = '" + prod.getSouCategorie() + "'\n" +
+                    "AND p.CategorieId = cs.CategorieId\n" +
+                    "AND cs.CategorieId = e.CategorieId_SousCategorie\n" +
+                    "AND e.CategorieId_Principale = cp.CategorieId\n" +
+                    "AND cs.NomCat = '" + prod.getSouCategorie() + "'\n" +
                     "AND p.ProduitId != " + prod.getIdProduit() + "\n" +
                     "AND t.NomProfil IN (\n";
 
@@ -51,11 +54,7 @@ public class Remplacement {
 
             // Creer les produits pour les proposer au client
             for (List<String> row : resultProfil) {
-                double prixUnitaire = 0;
-                double prixAuKg = 0;
-                if (resultProfil.get(0).get(3) != null) prixUnitaire = Double.parseDouble(resultProfil.get(0).get(3));
-                if (resultProfil.get(0).get(2) != null) prixAuKg = Double.parseDouble(resultProfil.get(0).get(2));
-                //produitsCategorieProfil.add(new Produit(Integer.parseInt(row.get(0)), row.get(1), prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5),Boolean.parseBoolean(row.get(8)),database));
+                produitsCategorieProfil.add(new Produit(row));
             }
 
             //filtrer les produits préférés par catégorie, marque et nutriscore
@@ -76,17 +75,32 @@ public class Remplacement {
         }
 
         // Récupérer les produits de la même catégorie
-        List<List<String>> result = database.executeQuery("SELECT * FROM Produit p  WHERE CategorieId = '" + prod.getSouCategorie() +"' AND ProduitId != " + prod.getIdProduit());
+        List<List<String>> result = database.executeQuery("SELECT DISTINCT\n" +
+                        "        Produit.ProduitId,\n" +
+                        "        NomProd,\n" +
+                        "        PrixAuKg,\n" +
+                        "        PrixUnitaire,\n" +
+                        "        Poids,\n" +
+                        "        cs.NomCat AS \"Sou-Categorie\",\n" +
+                        "        cp.NomCat AS \"Categorie Principale\",\n" +
+                        "        Marque,\n" +
+                        "        Nutriscore,\n" +
+                        "        bio\n" +
+                        "    FROM Produit\n" +
+                        "    JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId\n" +
+                        "    JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie\n" +
+                        "    JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId\n" +
+                        "    JOIN Approprier a ON Produit.ProduitId = a.ProduitId\n" +
+                        "    JOIN Periode pe ON a.PeriodeId = pe.PeriodeId\n" +
+                        "    WHERE Produit.ProduitId != " + prod.getIdProduit() + "\n" +
+                        "    AND cs.NomCat ='" + prod.getSouCategorie() +"'");
+
         List<Produit> produitsCategorie = new ArrayList<>();
 
 
         // Creer les produits pour les proposer au client
         for (List<String> row : result){
-            double prixUnitaire = 0;
-            double prixAuKg = 0;
-            if (result.get(0).get(3) != null) prixUnitaire = Double.parseDouble(result.get(0).get(3));
-            if (result.get(0).get(2) != null)  prixAuKg = Double.parseDouble(result.get(0).get(2));
-            //produitsCategorie.add(new Produit(Integer.parseInt(row.get(0)), row.get(1),prixUnitaire, prixAuKg, Double.parseDouble(row.get(4)), row.get(6), row.get(7), row.get(5), Boolean.parseBoolean(row.get(8)),database));
+            produitsCategorie.add(new Produit(row));
         }
 
         //filtrer les produits de la même catégorie par marque et nutriscore
