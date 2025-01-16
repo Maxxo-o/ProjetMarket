@@ -1,12 +1,12 @@
 public class Preparer {
-    public static void commanedsAPreparer(JDBC database) {
-        database.executeQuery("""
+    public static void commanedsAPreparer(JDBC database, String EtatCom) {
+        database.executeQuery(String.format("""
                     SELECT Commande.*, DateLivraison, ModeLivraison
                     FROM Commande
                     JOIN Delivrer ON Commande.CommandeId = Delivrer.CommandeId
-                    WHERE EtatCom = 'En preparation'
+                    WHERE EtatCom = %s
                     ORDER BY DateLivraison
-                """).forEach(System.out::println);
+                """, EtatCom)).forEach(System.out::println);
     }
 
     public static void marquerCommande(JDBC database, int CommandeId, String EtatCom) {
