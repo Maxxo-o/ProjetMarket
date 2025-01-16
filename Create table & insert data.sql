@@ -26,6 +26,9 @@ CREATE TABLE Categorie (
    NomCat VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE CategoriePhare (
+    CategorieId INT PRIMARY KEY
+);
 
 -- Table Produit
 CREATE TABLE Produit (
