@@ -8,21 +8,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+@SuppressWarnings("resource")
 public class AddProduitsCSV {
     public static void askPath(JDBC database) {
         Scanner sc = new Scanner(System.in);
         File file;
         while (true) {
-            System.out.println("Entrez votre chemin du ficher csv: ");
-            file = new File(sc.nextLine());
-            if (file.exists()) {
-                readCSV(database, file);
-                break;
+            System.out.println("Entrez votre chemin du ficher csv (Ne pas mettre espace dans votre chemin): ");
+            String input = sc.nextLine();
+            file = new File(input);
+            if (!file.exists()) {
+                System.out.println("Fichier introuvable. Veuillez réessayer.");
+                continue;
             }
-            else
-                System.out.println("Chemin invalid");
+
+            if (!file.getName().toLowerCase().endsWith(".csv")) {
+                System.out.println("Le fichier doit être au format CSV. Veuillez réessayer.");
+                continue;
+            }
+
+            readCSV(database, file);
+            break;
         }
-        sc.close();
     }
 
     public static void readCSV(JDBC database, File file) {
@@ -46,6 +53,8 @@ public class AddProduitsCSV {
         } catch (FileNotFoundException e) {
             System.err.println(e);
         } catch (IOException e) {
+            System.err.println(e);
+        } catch (Exception e) {
             System.err.println(e);
         }
         StringBuilder sql = new StringBuilder("INSERT ALL\n");
