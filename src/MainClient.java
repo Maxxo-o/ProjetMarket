@@ -244,6 +244,16 @@ public class MainClient {
             System.out.println("Panier n°" + panierArchiver.indexOf(p) + 1 + " : ");
             afficherProduitPanier(p.getProduits());
         }
+        System.out.println("Entrez le numéro du panier à restaurer : ");
+        Scanner sc = new Scanner(System.in);
+
+        int num = sc.nextInt() - 1;
+        if (num < 0 || num >= panierArchiver.size()) {
+            System.out.println("Panier non trouvé");
+        } else {
+            c.getPanier().restorePanier(panierArchiver.get(num));
+            System.out.println("Panier restauré");
+        }
     }
 
     public static void viderPanier() {
@@ -497,7 +507,25 @@ public class MainClient {
             if (num < 0 || num >= result.size()) {
                 System.out.println("Commande non trouvée");
             } else {
-                List<List<String>> listProd = database.executeQuery("SELECT p.* FROM Produit p, Composer c WHERE c.CommandeId = " + result.get(num).get(1) + " AND p.ProduitId = c.ProduitId");
+                List<List<String>> listProd = database.executeQuery(
+                        "SELECT DISTINCT\n" +
+                                "        Produit.ProduitId,\n" +
+                                "        NomProd,\n" +
+                                "        PrixAuKg,\n" +
+                                "        PrixUnitaire,\n" +
+                                "        Poids,\n" +
+                                "        cs.NomCat AS \"Sou-Categorie\",\n" +
+                                "        cp.NomCat AS \"Categorie Principale\",\n" +
+                                "        Marque,\n" +
+                                "        Nutriscore,\n" +
+                                "        bio\n" +
+                                "    FROM Produit\n" +
+                                "    JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId\n" +
+                                "    JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie\n" +
+                                "    JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId\n" +
+                                "    JOIN Preferer pr ON pr.ProduitId = Produit.ProduitId\n" +
+                                "    JOIN Composer c ON Produit.ProduitId = c.ProduitId\n" +
+                                "    WHERE c.CommandeId = " + result.get(num).get(1));
                 AffProduitBd(listProd);
             }
         }

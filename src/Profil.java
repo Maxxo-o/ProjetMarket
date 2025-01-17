@@ -120,9 +120,26 @@ public class Profil {
     }*/
 
     public void setArticlesPref() {
-        List<List<String>> result = database.executeQuery("SELECT ProduitId From Preferer WHERE ClientId = " + idClient);
+        List<List<String>> result = database.executeQuery("SELECT DISTINCT\n" +
+                        "        Produit.ProduitId,\n" +
+                        "        NomProd,\n" +
+                        "        PrixAuKg,\n" +
+                        "        PrixUnitaire,\n" +
+                        "        Poids,\n" +
+                        "        cs.NomCat AS \"Sou-Categorie\",\n" +
+                        "        cp.NomCat AS \"Categorie Principale\",\n" +
+                        "        Marque,\n" +
+                        "        Nutriscore,\n" +
+                        "        bio\n" +
+                        "    FROM Produit\n" +
+                        "    JOIN Categorie cs ON Produit.CategorieId = cs.CategorieId\n" +
+                        "    JOIN Etre ON cs.CategorieId = Etre.CategorieId_SousCategorie\n" +
+                        "    JOIN Categorie cp ON Etre.CategorieId_Principale = cp.CategorieId\n" +
+                        "    JOIN Preferer pr ON pr.ProduitId = Produit.ProduitId\n" +
+                        "    JOIN Client cl ON pr.ClientId = cl.ClientId\n" +
+                        "    WHERE pr.ClientId = " + idClient);
         for (List<String> l : result) {
-            ArticlesPref.add(new Produit(Integer.parseInt(l.get(0)), database));
+            ArticlesPref.add(new Produit(l));
         }
     }
 
