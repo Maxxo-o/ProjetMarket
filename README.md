@@ -1,6 +1,7 @@
 # 🛒 SuperMarché CLI - Projet Java MIAGE
 
 Bienvenue dans **SuperMarché CLI**, une application Java en ligne de commande qui simule un supermarché en ligne. Ce projet a été réalisé dans le cadre du Master 1 MIAGE. Il permet aux utilisateurs de faire leurs courses directement depuis une interface en ligne de commande, avec gestion d’un catalogue, d’un panier et d’une base de données SQLite.
+Le projet intègre aussi une interface administrateur pour mettre en avant différent produiit en fonction des saisons, ainsi qu'un algorithme de proposition de produit de remplacement et un algorithme de proposition de produit en fonction des habitudes de consommation des utilisateurs
 
 ## 🎯 Objectifs du projet
 
@@ -19,44 +20,8 @@ Bienvenue dans **SuperMarché CLI**, une application Java en ligne de commande q
 - **Maven** (ou autre outil de build, si utilisé)
 - Interface **CLI** (console)
 
-## 🗃️ Structure du projet
-
-supermarche-cli/
-│
-├── src/
-│ ├── main/
-│ │ ├── java/
-│ │ │ ├── model/ # Classes métiers : Produit, Utilisateur, Panier, etc.
-│ │ │ ├── dao/ # Accès aux données (produits, commandes, etc.)
-│ │ │ ├── service/ # Logique métier
-│ │ │ └── Main.java # Point d'entrée de l'application CLI
-│ │ └── resources/
-│ │ └── supermarche.db # Base de données SQLite
-└── README.md
-
-bash
-Copier
-Modifier
-
 ## 🚀 Lancer l'application
 
-### 1. Cloner le dépôt
-
-git clone https://github.com/votre-utilisateur/supermarche-cli.git
-cd supermarche-cli
-2. Compiler et exécuter
-bash
-Copier
-Modifier
-javac -d out src/main/java/**/*.java
-java -cp out Main
-Ou avec Maven :
-
-bash
-Copier
-Modifier
-mvn compile
-mvn exec:java -Dexec.mainClass="Main"
 3. Utilisation
 Une fois lancé, suivez les instructions dans la console pour :
 
@@ -69,30 +34,15 @@ Une fois lancé, suivez les instructions dans la console pour :
 💳 Passer la commande
 
 🧪 Exemples de commandes
-text
-Copier
-Modifier
+
 1 - Lister les produits
 2 - Rechercher un produit
 3 - Ajouter au panier
 4 - Voir le panier
 5 - Finaliser la commande
 0 - Quitter
-💾 Base de données
-La base SQLite est stockée localement et contient les tables suivantes :
 
-produits : liste des produits disponibles
-
-commandes : historique des commandes
-
-panier : contenu du panier temporaire
-
-La structure de la base est initialisée automatiquement au premier lancement.
-
-👨‍💻 Auteurs
-Étudiant(e) : [Votre nom ici]
-
-Master 1 MIAGE – [Nom de l'université]
+Master 1 MIAGE – [Université Toulouse Capitole]
 
 📄 Licence
 Ce projet est à but éducatif dans le cadre du cursus universitaire. Reproduction ou réutilisation libre dans un contexte académique.
